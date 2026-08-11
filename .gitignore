@@ -1,4 +1,11 @@
 .worktrees/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+playwright-report/
+test-results/
 .superpowers/
 tmp/
 .DS_Store
+node_modules/
