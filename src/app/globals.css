@@ -610,6 +610,18 @@ a {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
+  .site-footer {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .footer-brand {
+    grid-column: 1 / 3;
+  }
+
+  .footer-meta {
+    grid-column: 4 / 7;
+  }
+
   .about-heading {
     grid-column: 2 / 5;
   }
