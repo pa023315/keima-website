@@ -2,10 +2,12 @@ export type ContentState<T> =
   | { status: "ready"; value: T }
   | { status: "pending"; label: string };
 
+export type ContentLocale = "zh-TW" | "en";
+
 export type ServiceContent = {
   id: string;
   index: string;
-  status: "pending";
+  status: ContentState<string>;
   name: ContentState<string>;
   summary: ContentState<string>;
   audience: ContentState<string>;
@@ -13,8 +15,8 @@ export type ServiceContent = {
   image: ContentState<string>;
 };
 
-export type LocaleContent = {
-  locale: "zh-TW" | "en";
+export type LocaleContent<L extends ContentLocale = ContentLocale> = {
+  locale: L;
   nav: {
     home: string;
     about: string;
@@ -45,7 +47,7 @@ export type LocaleContent = {
 
 const pending = (label: string): ContentState<string> => ({ status: "pending", label });
 
-export const siteContent: Record<"zh-TW" | "en", LocaleContent> = {
+export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
   "zh-TW": {
     locale: "zh-TW",
     nav: { home: "首頁", about: "介紹", services: "服務", contact: "聯繫" },
@@ -63,7 +65,7 @@ export const siteContent: Record<"zh-TW" | "en", LocaleContent> = {
     services: ["01", "02", "03"].map((index) => ({
       id: `service-${index}`,
       index,
-      status: "pending" as const,
+      status: pending("目前狀態待提供"),
       name: pending("服務名稱待提供"),
       summary: pending("服務簡介待提供"),
       audience: pending("目標客群待提供"),
@@ -93,7 +95,7 @@ export const siteContent: Record<"zh-TW" | "en", LocaleContent> = {
     services: ["01", "02", "03"].map((index) => ({
       id: `service-${index}`,
       index,
-      status: "pending" as const,
+      status: pending("Current status pending"),
       name: pending("Service name pending"),
       summary: pending("Service summary pending"),
       audience: pending("Audience pending"),
