@@ -1,0 +1,26 @@
+import type { LocaleContent } from "@/content/site-content";
+
+type HeroProps = {
+  content: LocaleContent;
+};
+
+export function Hero({ content }: HeroProps) {
+  const statement =
+    content.hero.statement.status === "ready"
+      ? content.hero.statement.value
+      : content.hero.statement.label;
+
+  return (
+    <section id="home" className="hero" aria-labelledby="hero-title">
+      <div className="hero-cut" aria-hidden="true" />
+      <p className="hero-eyebrow">{content.hero.eyebrow}</p>
+      <h1 id="hero-title" className="hero-title">
+        {statement}
+      </h1>
+      <a className="hero-scroll" href="#about">
+        <span aria-hidden="true">01—</span>
+        {content.hero.scroll}
+      </a>
+    </section>
+  );
+}
