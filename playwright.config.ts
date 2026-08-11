@@ -9,7 +9,7 @@ export default defineConfig({
   webServer: {
     command: "npx serve out -l 4173",
     url: "http://127.0.0.1:4173/zh-TW/",
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
   },
   projects: [
     {
