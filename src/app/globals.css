@@ -17,11 +17,14 @@
   --focus-ring: #2eb8c6;
   --page-margin: clamp(1.25rem, 4vw, 4.5rem);
   --ease-keima: cubic-bezier(0.22, 1, 0.36, 1);
+  --header-height: 5.5rem;
+  --mobile-nav-height: 3.375rem;
 }
 
 html {
   background: var(--keima-paper);
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
 }
 
 body {
@@ -44,8 +47,9 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: 2px solid var(--keima-ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px var(--focus-ring);
 }
 
 .sr-only {
@@ -77,12 +81,18 @@ a {
   transform: translateY(0);
 }
 
+.skip-link:focus-visible {
+  background: var(--surface-light);
+  color: var(--keima-ink);
+}
+
 .site-header {
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
   display: grid;
   grid-template-columns: 2fr 8fr 2fr;
+  grid-template-areas: "brand navigation locale";
   align-items: center;
   min-height: 5.5rem;
   padding: 0 var(--page-margin);
@@ -91,6 +101,7 @@ a {
 }
 
 .brand-link {
+  grid-area: brand;
   display: inline-flex;
   align-items: center;
   justify-self: start;
@@ -106,6 +117,7 @@ a {
 }
 
 .primary-navigation {
+  grid-area: navigation;
   justify-self: center;
 }
 
@@ -147,12 +159,19 @@ a {
 
 .primary-navigation a:hover::after,
 .primary-navigation a[aria-current="location"]::after,
-.locale-link:hover::after {
+.primary-navigation a:focus-visible::after,
+.locale-link:hover::after,
+.locale-link:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
 }
 
+.primary-navigation a[aria-current="location"] {
+  box-shadow: inset 0 -2px 0 var(--keima-ink);
+}
+
 .locale-link {
+  grid-area: locale;
   justify-self: end;
 }
 
@@ -241,8 +260,17 @@ a {
 }
 
 @media (max-width: 767px) {
+  :root {
+    --header-height: 4.75rem;
+  }
+
+  body {
+    padding-bottom: var(--mobile-nav-height);
+  }
+
   .site-header {
     grid-template-columns: 1fr auto;
+    grid-template-areas: "brand locale";
     min-height: 4.75rem;
   }
 
@@ -253,6 +281,7 @@ a {
   .brand-link picture,
   .brand-link img {
     width: 32px;
+    height: 32px;
   }
 
   .locale-link {
@@ -289,6 +318,20 @@ a {
     min-height: 52px;
     padding: 0.25rem;
     font-size: 0.68rem;
+  }
+
+  .primary-navigation a:focus-visible {
+    background: var(--surface-light);
+    color: var(--keima-ink);
+    outline-color: var(--keima-ink);
+    outline-offset: -4px;
+    box-shadow: inset 0 0 0 4px var(--focus-ring);
+  }
+
+  .primary-navigation a[aria-current="location"] {
+    background: var(--surface-light);
+    color: var(--keima-ink);
+    box-shadow: inset 0 -2px 0 var(--keima-ink), inset 0 -4px 0 var(--keima-cyan);
   }
 
   .primary-navigation a::after {

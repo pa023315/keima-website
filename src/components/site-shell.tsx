@@ -7,10 +7,12 @@ type SiteShellProps = {
 };
 
 export function SiteShell({ content }: SiteShellProps) {
+  const skipLabel = content.locale === "zh-TW" ? "跳至主要內容" : "Skip to main content";
+
   return (
     <>
       <a className="skip-link" href="#main">
-        Skip to content
+        {skipLabel}
       </a>
       <Navigation content={content} />
       <main id="main" data-locale={content.locale}>

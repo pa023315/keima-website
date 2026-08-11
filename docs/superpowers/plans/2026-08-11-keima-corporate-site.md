@@ -681,25 +681,125 @@ git commit -m "feat: add bilingual static routes"
 Create `src/components/__tests__/navigation.test.tsx`:
 
 ```tsx
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { Navigation } from "@/components/navigation";
+import { SiteShell } from "@/components/site-shell";
 import { siteContent } from "@/content/site-content";
 
-vi.stubGlobal("IntersectionObserver", class {
-  observe() {}
-  disconnect() {}
-  unobserve() {}
-});
+let observerInstances: IntersectionObserverStub[] = [];
+
+class IntersectionObserverStub implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "";
+  readonly scrollMargin = "";
+  readonly thresholds = [];
+  readonly disconnect = vi.fn();
+  readonly observe = vi.fn();
+  readonly takeRecords = vi.fn(() => []);
+  readonly unobserve = vi.fn();
+
+  constructor(readonly callback: IntersectionObserverCallback) {
+    observerInstances.push(this);
+  }
+}
+
+function renderNavigation() {
+  return render(
+    <>
+      <Navigation content={siteContent["zh-TW"]} />
+      <section id="home" />
+      <section id="about" />
+      <section id="services" />
+      <section id="contact" />
+    </>,
+  );
+}
+
+function intersectionEntry(target: Element, intersectionRatio: number): IntersectionObserverEntry {
+  return {
+    boundingClientRect: target.getBoundingClientRect(),
+    intersectionRatio,
+    intersectionRect: target.getBoundingClientRect(),
+    isIntersecting: intersectionRatio > 0,
+    rootBounds: null,
+    target,
+    time: 0,
+  };
+}
 
 describe("Navigation", () => {
-  it("uses the official lockup and links to every section", () => {
-    render(<Navigation content={siteContent["zh-TW"]} />);
-    expect(screen.getByRole("img", { name: "KEIMA" })).toHaveAttribute("src", "/brand/keima-lockup-color.svg");
-    for (const target of ["#home", "#about", "#services", "#contact"]) {
-      expect(screen.getByRole("link", { name: new RegExp(target.slice(1), "i") }).getAttribute("href")).toBe(target);
+  beforeEach(() => {
+    observerInstances = [];
+    vi.stubGlobal("IntersectionObserver", IntersectionObserverStub);
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("uses official responsive marks and localized section names", () => {
+    renderNavigation();
+    const officialLogo = screen.getByRole("img", { name: "KEIMA" });
+    expect(officialLogo).toHaveAttribute("src", "/brand/keima-lockup-color.svg");
+    expect(officialLogo.closest("picture")?.querySelector("source")).toMatchObject({
+      media: "(max-width: 767px)",
+      srcset: "/brand/keima-icon-color.svg",
+    });
+
+    const navigation = screen.getByRole("navigation", { name: "主要導覽" });
+    for (const [label, href] of [["首頁", "#home"], ["介紹", "#about"], ["服務", "#services"], ["聯繫", "#contact"]]) {
+      expect(within(navigation).getByRole("link", { name: label })).toHaveAttribute("href", href);
     }
-    expect(screen.getByRole("link", { name: "EN" })).toHaveAttribute("href", "/en/");
+  });
+
+  it("updates the active section, locale hash, and observer cleanup", () => {
+    const { unmount } = renderNavigation();
+    const observer = observerInstances[0];
+    expect(observer.observe).toHaveBeenCalledTimes(4);
+    expect(screen.getByRole("link", { name: "EN" })).toHaveAttribute("href", "/en/#home");
+
+    act(() => {
+      observer.callback([
+        intersectionEntry(document.getElementById("about")!, 0.2),
+        intersectionEntry(document.getElementById("services")!, 0.8),
+      ], observer);
+    });
+
+    expect(screen.getByRole("link", { name: "服務" })).toHaveAttribute("aria-current", "location");
+    expect(screen.getByRole("link", { name: "EN" })).toHaveAttribute("href", "/en/#services");
+    unmount();
+    expect(observer.disconnect).toHaveBeenCalledOnce();
+  });
+
+  it("guards locale persistence without weakening the native href", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    });
+    renderNavigation();
+    const localeLink = screen.getByRole("link", { name: "EN" });
+    localeLink.addEventListener("click", (event) => event.preventDefault(), { once: true });
+    expect(() => fireEvent.click(localeLink)).not.toThrow();
+    expect(localeLink).toHaveAttribute("href", "/en/#home");
+  });
+
+  it("orders logo, locale, then navigation for compact keyboard flow", () => {
+    renderNavigation();
+    const header = screen.getByRole("banner");
+    expect(header.children[0]).toHaveClass("brand-link");
+    expect(header.children[1]).toHaveClass("locale-link");
+    expect(header.children[2]).toHaveClass("primary-navigation");
+  });
+
+  it("localizes navigation landmarks and the skip link", () => {
+    cleanup();
+    render(<SiteShell content={siteContent["zh-TW"]} />);
+    expect(screen.getByRole("link", { name: "跳至主要內容" })).toHaveAttribute("href", "#main");
+    expect(screen.getByRole("link", { name: "KEIMA 首頁" })).toHaveAttribute("href", "#home");
+    expect(screen.getByRole("navigation", { name: "主要導覽" })).toBeInTheDocument();
   });
 });
 ```
@@ -721,24 +821,61 @@ Create `src/components/navigation.tsx`:
 ```tsx
 "use client";
 
+import Link from "next/link";
+
 import type { LocaleContent } from "@/content/site-content";
-import { useActiveSection } from "@/hooks/use-active-section";
+import { sectionIds, useActiveSection } from "@/hooks/use-active-section";
+
+const alternateLocales = {
+  "zh-TW": { href: "/en/", label: "EN", locale: "en" },
+  en: { href: "/zh-TW/", label: "中文", locale: "zh-TW" },
+} as const;
+
+const accessibilityLabels = {
+  "zh-TW": { brand: "KEIMA 首頁", navigation: "主要導覽" },
+  en: { brand: "KEIMA home", navigation: "Primary navigation" },
+} as const;
 
 export function Navigation({ content }: { content: LocaleContent }) {
-  const alternate = content.locale === "zh-TW" ? { href: "/en/", label: "EN" } : { href: "/zh-TW/", label: "中文" };
-  const active = useActiveSection();
+  const activeSection = useActiveSection();
+  const alternate = alternateLocales[content.locale];
+  const labels = accessibilityLabels[content.locale];
+  const localeHref = `${alternate.href}#${activeSection}`;
+
+  function rememberLocale() {
+    try {
+      localStorage.setItem("keima-locale", alternate.locale);
+    } catch {
+      // The native link remains functional when storage is unavailable.
+    }
+  }
+
   return (
     <header className="site-header">
-      <a className="brand-link" href="#home" aria-label="KEIMA home">
+      <a className="brand-link" href="#home" aria-label={labels.brand}>
         <picture>
-          <source media="(max-width: 639px)" srcSet="/brand/keima-icon-color.svg" />
-          <img src="/brand/keima-lockup-color.svg" alt="KEIMA" />
+          <source media="(max-width: 767px)" srcSet="/brand/keima-icon-color.svg" />
+          <img src="/brand/keima-lockup-color.svg" alt="KEIMA" width="148" height="30" />
         </picture>
       </a>
-      <nav aria-label="Primary">
-        {Object.entries(content.nav).map(([id, label]) => <a key={id} href={`#${id}`} aria-current={active === id ? "location" : undefined}>{label}<span className="sr-only"> {id}</span></a>)}
+
+      <Link href={localeHref} legacyBehavior>
+        <a className="locale-link" href={localeHref} hrefLang={alternate.locale} onClick={rememberLocale}>
+          {alternate.label}
+        </a>
+      </Link>
+
+      <nav className="primary-navigation" aria-label={labels.navigation}>
+        <ul>
+          {sectionIds.map((id) => (
+            <li key={id}>
+              <a href={`#${id}`} aria-current={activeSection === id ? "location" : undefined}>
+                {content.nav[id]}
+              </a>
+            </li>
+          ))}
+        </ul>
       </nav>
-      <a className="locale-link" href={alternate.href} onClick={() => window.localStorage.setItem("keima-locale", content.locale === "zh-TW" ? "en" : "zh-TW")}>{alternate.label}</a>
     </header>
   );
 }
@@ -751,21 +888,42 @@ Create `src/hooks/use-active-section.ts`:
 
 import { useEffect, useState } from "react";
 
-const sectionIds = ["home", "about", "services", "contact"] as const;
+export const sectionIds = ["home", "about", "services", "contact"] as const;
+export type SectionId = (typeof sectionIds)[number];
 
-export function useActiveSection() {
-  const ids = sectionIds;
-  const [active, setActive] = useState(ids[0] ?? "");
+export function useActiveSection(): SectionId {
+  const [activeSection, setActiveSection] = useState<SectionId>("home");
+
   useEffect(() => {
-    const elements = ids.map((id) => document.getElementById(id)).filter((element): element is HTMLElement => Boolean(element));
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible?.target.id) setActive(visible.target.id);
-    }, { rootMargin: "-30% 0px -55%", threshold: [0, .2, .5, .8] });
-    elements.forEach((element) => observer.observe(element));
+    const ratios = new Map<SectionId, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (sectionIds.includes(entry.target.id as SectionId)) {
+            ratios.set(entry.target.id as SectionId, entry.isIntersecting ? entry.intersectionRatio : 0);
+          }
+        }
+
+        const mostVisible = sectionIds.reduce<SectionId | null>((current, id) => {
+          if ((ratios.get(id) ?? 0) <= 0) return current;
+          if (current === null || (ratios.get(id) ?? 0) > (ratios.get(current) ?? 0)) return id;
+          return current;
+        }, null);
+
+        if (mostVisible) setActiveSection(mostVisible);
+      },
+      { rootMargin: "-30% 0px -55%", threshold: [0, 0.2, 0.5, 0.8] },
+    );
+
+    for (const id of sectionIds) {
+      const section = document.getElementById(id);
+      if (section) observer.observe(section);
+    }
+
     return () => observer.disconnect();
-  }, [ids]);
-  return active;
+  }, []);
+
+  return activeSection;
 }
 ```
 
@@ -775,12 +933,19 @@ Create `src/components/hero.tsx`:
 import type { LocaleContent } from "@/content/site-content";
 
 export function Hero({ content }: { content: LocaleContent }) {
+  const statement = content.hero.statement.status === "ready"
+    ? content.hero.statement.value
+    : content.hero.statement.label;
+
   return (
     <section id="home" className="hero" aria-labelledby="hero-title">
-      <p className="eyebrow">{content.hero.eyebrow}</p>
-      <h1 id="hero-title" className="display">{content.hero.statement.status === "pending" ? content.hero.statement.label : content.hero.statement.value}</h1>
-      <p className="scroll-cue">{content.hero.scroll}</p>
       <div className="hero-cut" aria-hidden="true" />
+      <p className="hero-eyebrow">{content.hero.eyebrow}</p>
+      <h1 id="hero-title" className="hero-title">{statement}</h1>
+      <a className="hero-scroll" href="#about">
+        <span aria-hidden="true">01—</span>
+        {content.hero.scroll}
+      </a>
     </section>
   );
 }
@@ -794,9 +959,11 @@ import { Hero } from "@/components/hero";
 import { Navigation } from "@/components/navigation";
 
 export function SiteShell({ content }: { content: LocaleContent }) {
+  const skipLabel = content.locale === "zh-TW" ? "跳至主要內容" : "Skip to main content";
+
   return (
     <>
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a className="skip-link" href="#main">{skipLabel}</a>
       <Navigation content={content} />
       <main id="main" data-locale={content.locale}><Hero content={content} /></main>
     </>
@@ -821,43 +988,67 @@ Define these exact tokens and structural rules at the top of `src/app/globals.cs
   --accent-hover: #279faa;
   --focus-ring: #2eb8c6;
   --page-margin: clamp(1.25rem, 4vw, 4.5rem);
-  --ease-keima: cubic-bezier(.22, 1, .36, 1);
+  --ease-keima: cubic-bezier(0.22, 1, 0.36, 1);
+  --header-height: 5.5rem;
+  --mobile-nav-height: 3.375rem;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--keima-paper); }
-body { margin: 0; color: var(--keima-ink); background: var(--keima-paper); font-family: var(--font-cjk), sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--keima-paper); scroll-behavior: smooth; scroll-padding-top: var(--header-height); }
+body { margin: 0; color: var(--keima-ink); background: var(--keima-paper); font-family: var(--font-latin), var(--font-cjk), sans-serif; }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
-.display { font-family: var(--font-latin), var(--font-cjk), sans-serif; font-size: clamp(5rem, 11vw, 12rem); line-height: .82; letter-spacing: -.07em; }
-.hero { min-height: 100svh; padding: 9rem var(--page-margin) 4rem; position: relative; overflow: clip; }
-.hero-cut { position: absolute; right: -8vw; bottom: -18vh; width: min(36vw, 38rem); height: 70vh; background: var(--keima-ink); clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 100%); }
+:focus-visible { outline: 2px solid var(--keima-ink); outline-offset: 3px; box-shadow: 0 0 0 5px var(--focus-ring); }
+.hero-title { z-index: 2; grid-column: 1 / span 10; align-self: center; max-width: 10ch; margin: clamp(2rem, 6vh, 5.5rem) 0; font-family: var(--font-latin), var(--font-cjk), sans-serif; font-size: clamp(5rem, 11vw, 12rem); font-weight: 650; line-height: .82; letter-spacing: -.07em; text-wrap: balance; }
+.hero { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr auto; min-height: 100svh; padding: clamp(9rem, 15vh, 12rem) var(--page-margin) clamp(3rem, 7vh, 5rem); overflow: clip; isolation: isolate; }
+.hero-cut { position: absolute; z-index: 0; top: 20%; right: -5%; width: 40%; height: 67%; background: var(--keima-ink); clip-path: polygon(23% 0, 100% 0, 100% 100%, 0 100%, 38% 56%); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-@media (max-width: 639px) {
-  .display { font-size: clamp(3.25rem, 17vw, 5.5rem); line-height: .9; }
-  .hero-cut { width: 55vw; height: 46vh; }
+@media (max-width: 767px) {
+  :root { --header-height: 4.75rem; }
+  body { padding-bottom: var(--mobile-nav-height); }
+  .hero-title { font-size: clamp(3.25rem, 17vw, 5.5rem); }
+  .hero-cut { top: 45%; right: -24%; width: 78%; height: 46%; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%, 20% 55%); }
 }
 ```
 
 Add these navigation selectors:
 
 ```css
-.site-header { position: fixed; inset: 0 0 auto; z-index: 50; display: grid; grid-template-columns: 2fr 8fr 2fr; align-items: center; min-height: 5.75rem; padding: 1rem var(--page-margin); background: color-mix(in srgb, var(--keima-paper) 88%, transparent); backdrop-filter: blur(12px); }
-.brand-link { display: inline-flex; width: 148px; min-height: 44px; align-items: center; }
-.brand-link img { display: block; width: 100%; height: auto; }
-.site-header nav { display: flex; justify-content: center; gap: clamp(1rem, 2.4vw, 2.75rem); }
-.site-header nav a, .locale-link { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; font-family: var(--font-latin), var(--font-cjk), sans-serif; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
-.site-header nav a::after { content: ""; height: 1px; background: var(--keima-cyan); position: absolute; inset: auto 0 0; transform: scaleX(0); transform-origin: right; transition: transform .35s var(--ease-keima); }
-.site-header nav a { position: relative; }
-.site-header nav a:hover::after, .site-header nav a[aria-current="location"]::after { transform: scaleX(1); transform-origin: left; }
-.locale-link { justify-self: end; }
-.skip-link { position: fixed; z-index: 100; left: var(--page-margin); top: 0; transform: translateY(-120%); background: var(--keima-ink); color: var(--keima-paper); padding: .75rem 1rem; }
-.skip-link:focus { transform: translateY(.5rem); }
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 2fr 8fr 2fr;
+  grid-template-areas: "brand navigation locale";
+  align-items: center;
+  min-height: 5.5rem;
+  padding: 0 var(--page-margin);
+  background: var(--keima-paper);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.brand-link { grid-area: brand; display: inline-flex; align-items: center; width: 148px; min-height: 44px; }
+.brand-link picture, .brand-link img { display: block; width: 148px; height: auto; }
+.primary-navigation { grid-area: navigation; justify-self: center; }
+.primary-navigation ul { display: flex; align-items: center; gap: clamp(1.5rem, 3vw, 3.5rem); padding: 0; margin: 0; list-style: none; }
+.primary-navigation a, .locale-link { position: relative; display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+.primary-navigation a::after, .locale-link::after { position: absolute; right: 0; bottom: .5rem; left: 0; height: 2px; background: var(--keima-cyan); content: ""; transform: scaleX(0); }
+.primary-navigation a:hover::after,
+.primary-navigation a[aria-current="location"]::after,
+.primary-navigation a:focus-visible::after,
+.locale-link:hover::after,
+.locale-link:focus-visible::after { transform: scaleX(1); }
+.primary-navigation a[aria-current="location"] { box-shadow: inset 0 -2px 0 var(--keima-ink); }
+.locale-link { grid-area: locale; justify-self: end; }
+.skip-link:focus-visible { background: var(--surface-light); color: var(--keima-ink); }
 @media (max-width: 767px) {
-  .site-header { grid-template-columns: 1fr auto; min-height: 4.75rem; }
+  .site-header { grid-template-columns: 1fr auto; grid-template-areas: "brand locale"; min-height: 4.75rem; }
   .brand-link { width: 44px; }
-  .brand-link img { width: 32px; height: 32px; }
-  .site-header nav { position: fixed; inset: auto var(--page-margin) 1rem; justify-content: space-between; padding: .25rem .75rem; background: var(--keima-paper); border: 1px solid var(--border-primary); }
+  .brand-link picture, .brand-link img { width: 32px; height: 32px; }
+  .primary-navigation { position: fixed; right: 0; bottom: 0; left: 0; width: 100%; background: var(--keima-ink); color: var(--surface-light); border-top: 2px solid var(--keima-cyan); }
+  .primary-navigation ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+  .primary-navigation a { justify-content: center; width: 100%; min-height: 52px; }
+  .primary-navigation a:focus-visible { background: var(--surface-light); color: var(--keima-ink); outline-color: var(--keima-ink); outline-offset: -4px; box-shadow: inset 0 0 0 4px var(--focus-ring); }
+  .primary-navigation a[aria-current="location"] { background: var(--surface-light); color: var(--keima-ink); box-shadow: inset 0 -2px 0 var(--keima-ink), inset 0 -4px 0 var(--keima-cyan); }
 }
 ```
 
@@ -867,16 +1058,18 @@ Run:
 
 ```bash
 npm test -- src/components/__tests__/navigation.test.tsx
+npm test
 npm run typecheck
 npm run lint
+npm run build
 ```
 
-Expected: the navigation test passes and both static checks exit successfully.
+Expected: all six navigation tests, the full suite, both static checks, and the static export build pass.
 
 Commit:
 
 ```bash
-git add src/app/globals.css src/components/navigation.tsx src/components/hero.tsx src/components/site-shell.tsx src/components/__tests__/navigation.test.tsx src/hooks/use-active-section.ts
+git add docs/superpowers/plans/2026-08-11-keima-corporate-site.md src/app/globals.css src/components/navigation.tsx src/components/hero.tsx src/components/site-shell.tsx src/components/__tests__/navigation.test.tsx src/hooks/use-active-section.ts
 git commit -m "feat: build KEIMA navigation and hero"
 ```
 
