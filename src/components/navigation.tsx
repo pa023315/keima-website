@@ -28,7 +28,7 @@ export function Navigation({ content }: NavigationProps) {
     <header className="site-header">
       <a className="brand-link" href="#home" aria-label="KEIMA home">
         <picture>
-          <source media="(max-width: 639px)" srcSet="/brand/keima-icon-color.svg" />
+          <source media="(max-width: 767px)" srcSet="/brand/keima-icon-color.svg" />
           <img src="/brand/keima-lockup-color.svg" alt="KEIMA" width="148" height="30" />
         </picture>
       </a>

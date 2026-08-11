@@ -24,9 +24,15 @@ describe("Navigation", () => {
   it("uses the official KEIMA marks and links every primary section", () => {
     render(<Navigation content={siteContent["zh-TW"]} />);
 
-    expect(screen.getByRole("img", { name: "KEIMA" })).toHaveAttribute(
+    const officialLogo = screen.getByRole("img", { name: "KEIMA" });
+
+    expect(officialLogo).toHaveAttribute(
       "src",
       "/brand/keima-lockup-color.svg",
+    );
+    expect(officialLogo.closest("picture")?.querySelector("source")).toHaveAttribute(
+      "media",
+      "(max-width: 767px)",
     );
 
     const expectedLinks = [
