@@ -301,6 +301,7 @@ describe("siteContent", () => {
       expect(locale.about.person.status).toBe("pending");
       expect(locale.about.portrait.status).toBe("pending");
       expect(locale.contact.email.status).toBe("pending");
+      expect(locale.footer.social.status).toBe("pending");
       expect(locale.footer.copyright.status).toBe("pending");
       expect(locale.footer.legal.status).toBe("pending");
       for (const service of locale.services) {
@@ -356,7 +357,7 @@ export type LocaleContent<L extends ContentLocale = ContentLocale> = {
   servicesLabel: string;
   services: ServiceContent[];
   contact: { label: string; email: ContentState<string> };
-  footer: { copyright: ContentState<string>; legal: ContentState<string> };
+  footer: { social: ContentState<string>; copyright: ContentState<string>; legal: ContentState<string> };
 };
 
 const pending = (label: string): ContentState<string> => ({ status: "pending", label });
@@ -379,7 +380,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
       image: pending("服務圖片待提供"),
     })),
     contact: { label: "商務聯繫", email: pending("商務 Email 待提供") },
-    footer: { copyright: pending("版權資訊待提供"), legal: pending("法律資訊待提供") },
+    footer: { social: pending("社群資訊待提供"), copyright: pending("版權資訊待提供"), legal: pending("法律資訊待提供") },
   },
   en: {
     locale: "en",
@@ -398,7 +399,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
       image: pending("Service image pending"),
     })),
     contact: { label: "Business Inquiry", email: pending("Business email pending") },
-    footer: { copyright: pending("Copyright information pending"), legal: pending("Legal information pending") },
+    footer: { social: pending("Social information pending"), copyright: pending("Copyright information pending"), legal: pending("Legal information pending") },
   },
 };
 ```
@@ -1186,7 +1187,8 @@ Create `src/components/footer.tsx`:
 import type { LocaleContent } from "@/content/site-content";
 
 export function Footer({ content }: { content: LocaleContent }) {
-  return <footer><img src="/brand/keima-lockup.svg" alt="KEIMA" /><p>{content.footer.copyright.status === "pending" ? content.footer.copyright.label : content.footer.copyright.value}</p><p>{content.footer.legal.status === "pending" ? content.footer.legal.label : content.footer.legal.value}</p></footer>;
+  const sections = ["home", "about", "services", "contact"] as const;
+  return <footer><img src="/brand/keima-lockup.svg" alt="KEIMA" /><nav>{sections.map((section) => <a key={section} href={`#${section}`}>{content.nav[section]}</a>)}</nav><p>{content.footer.social.status === "pending" ? content.footer.social.label : content.footer.social.value}</p><p>{content.footer.copyright.status === "pending" ? content.footer.copyright.label : content.footer.copyright.value}</p><p>{content.footer.legal.status === "pending" ? content.footer.legal.label : content.footer.legal.value}</p></footer>;
 }
 ```
 

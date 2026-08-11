@@ -40,6 +40,7 @@ export type LocaleContent<L extends ContentLocale = ContentLocale> = {
     email: ContentState<string>;
   };
   footer: {
+    social: ContentState<string>;
     copyright: ContentState<string>;
     legal: ContentState<string>;
   };
@@ -74,6 +75,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
     })),
     contact: { label: "商務聯繫", email: pending("商務 Email 待提供") },
     footer: {
+      social: pending("社群資訊待提供"),
       copyright: pending("版權資訊待提供"),
       legal: pending("法律資訊待提供"),
     },
@@ -104,6 +106,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
     })),
     contact: { label: "Business Inquiry", email: pending("Business email pending") },
     footer: {
+      social: pending("Social information pending"),
       copyright: pending("Copyright information pending"),
       legal: pending("Legal information pending"),
     },

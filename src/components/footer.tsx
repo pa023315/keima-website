@@ -6,11 +6,15 @@ type FooterProps = {
   content: LocaleContent;
 };
 
+const footerSections = ["home", "about", "services", "contact"] as const;
+
 function contentValue(state: ContentState<string>) {
   return state.status === "ready" ? state.value : state.label;
 }
 
 export function Footer({ content }: FooterProps) {
+  const navigationLabel = content.locale === "zh-TW" ? "頁尾導覽" : "Footer navigation";
+
   return (
     <footer className="site-footer">
       <div className="footer-brand">
@@ -22,7 +26,21 @@ export function Footer({ content }: FooterProps) {
           unoptimized
         />
       </div>
+
+      <nav className="footer-navigation" aria-label={navigationLabel}>
+        <ul>
+          {footerSections.map((section) => (
+            <li key={section}>
+              <a href={`#${section}`}>{content.nav[section]}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       <div className="footer-meta">
+        <p data-content-status={content.footer.social.status}>
+          {contentValue(content.footer.social)}
+        </p>
         <p data-content-status={content.footer.copyright.status}>
           {contentValue(content.footer.copyright)}
         </p>

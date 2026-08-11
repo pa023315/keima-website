@@ -11,6 +11,20 @@ const zhContent = siteContent["zh-TW"];
 
 afterEach(cleanup);
 
+function renderReadyServiceUrl(value: string) {
+  const content: LocaleContent = {
+    ...zhContent,
+    services: [
+      {
+        ...zhContent.services[0],
+        url: { status: "ready", value },
+      },
+    ],
+  };
+
+  render(<Services content={content} />);
+}
+
 describe("About", () => {
   it("shows the current pending profile and portrait labels", () => {
     render(<About content={zhContent} />);
@@ -65,21 +79,37 @@ describe("Services", () => {
     );
   });
 
-  it("does not make an unsafe ready service URL clickable", () => {
-    const unsafeContent: LocaleContent = {
-      ...zhContent,
-      services: [
-        {
-          ...zhContent.services[0],
-          url: { status: "ready", value: "javascript:alert(1)" },
-        },
-      ],
-    };
+  it.each([
+    "/\\evil.example/path",
+    "/%5cevil.example/path",
+    "//evil.example",
+    " /path",
+    "/path ",
+    "/path\nnext",
+    "/%0aevil.example/path",
+    "javascript:alert(1)",
+    "http://example.com/path",
+  ])("does not make unsafe ready service URL %j clickable", (unsafeUrl) => {
+    renderReadyServiceUrl(unsafeUrl);
 
-    render(<Services content={unsafeContent} />);
-
-    expect(screen.getByText("javascript:alert(1)")).toBeVisible();
+    const urlDefinition = screen.getByText("網址").closest("div")?.querySelector("dd");
+    expect(urlDefinition).toBeVisible();
+    expect(urlDefinition?.textContent).toBe(unsafeUrl);
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("normalizes a safe same-origin relative service path", () => {
+    renderReadyServiceUrl("/section/../path?from=service#details");
+
+    expect(
+      screen.getByRole("link", { name: "/section/../path?from=service#details" }),
+    ).toHaveAttribute("href", "/path?from=service#details");
+  });
+
+  it("accepts a valid root-relative service path", () => {
+    renderReadyServiceUrl("/path");
+
+    expect(screen.getByRole("link", { name: "/path" })).toHaveAttribute("href", "/path");
   });
 });
 
@@ -108,13 +138,31 @@ describe("Contact", () => {
 });
 
 describe("Footer", () => {
-  it("uses the official logo and shows pending legal information", () => {
+  it("uses the official logo and shows localized navigation and pending information", () => {
     render(<Footer content={zhContent} />);
 
     expect(screen.getByRole("img", { name: "KEIMA" })).toHaveAttribute(
       "src",
       "/brand/keima-lockup.svg",
     );
+    const footerNavigation = screen.getByRole("navigation", { name: "頁尾導覽" });
+    const expectedLinks = [
+      ["首頁", "#home"],
+      ["介紹", "#about"],
+      ["服務", "#services"],
+      ["聯繫", "#contact"],
+    ] as const;
+
+    for (const [label, href] of expectedLinks) {
+      expect(within(footerNavigation).getByRole("link", { name: label })).toHaveAttribute(
+        "href",
+        href,
+      );
+    }
+
+    const social = screen.getByText("社群資訊待提供");
+    expect(social).toBeVisible();
+    expect(social.closest("a")).toBeNull();
     expect(screen.getByText("版權資訊待提供")).toBeVisible();
     expect(screen.getByText("法律資訊待提供")).toBeVisible();
   });

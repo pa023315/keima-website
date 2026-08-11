@@ -24,6 +24,7 @@ describe("siteContent", () => {
       expect(locale.about.person.status).toBe("pending");
       expect(locale.about.portrait.status).toBe("pending");
       expect(locale.contact.email.status).toBe("pending");
+      expect(locale.footer.social.status).toBe("pending");
       expect(locale.footer.copyright.status).toBe("pending");
       expect(locale.footer.legal.status).toBe("pending");
 
@@ -36,5 +37,16 @@ describe("siteContent", () => {
         expect(service.image.status).toBe("pending");
       }
     }
+  });
+
+  it("provides localized pending social labels", () => {
+    expect(siteContent["zh-TW"].footer.social).toEqual({
+      status: "pending",
+      label: "社群資訊待提供",
+    });
+    expect(siteContent.en.footer.social).toEqual({
+      status: "pending",
+      label: "Social information pending",
+    });
   });
 });

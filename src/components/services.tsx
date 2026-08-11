@@ -7,20 +7,38 @@ type ServicesProps = {
   content: LocaleContent;
 };
 
+const trustedServiceOrigin = "https://keima.invalid";
+const absoluteUrlPattern = /^[a-z][a-z\d+.-]*:/i;
+const rawUnsafeUrlCharacterPattern = /[\u0000-\u001f\u007f\\\s]/;
+const encodedUnsafeUrlCharacterPattern = /%(?:0[\da-f]|1[\da-f]|5c|7f)/i;
+
 function contentValue(state: ContentState<string>) {
   return state.status === "ready" ? state.value : state.label;
 }
 
 function safeServiceHref(value: string) {
-  const href = value.trim();
-
-  if (href.startsWith("/") && !href.startsWith("//")) {
-    return href;
+  if (
+    value.length === 0 ||
+    value !== value.trim() ||
+    value.startsWith("//") ||
+    rawUnsafeUrlCharacterPattern.test(value) ||
+    encodedUnsafeUrlCharacterPattern.test(value)
+  ) {
+    return null;
   }
 
   try {
-    const url = new URL(href);
-    return url.protocol === "http:" || url.protocol === "https:" ? href : null;
+    const url = new URL(value, trustedServiceOrigin);
+
+    if (absoluteUrlPattern.test(value)) {
+      return url.protocol === "https:" ? url.href : null;
+    }
+
+    if (url.origin !== trustedServiceOrigin) {
+      return null;
+    }
+
+    return `${url.pathname}${url.search}${url.hash}`;
   } catch {
     return null;
   }
