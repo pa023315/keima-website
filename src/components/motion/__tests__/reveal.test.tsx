@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HeroMotion } from "@/components/motion/hero-motion";
@@ -100,7 +100,7 @@ describe("Reveal", () => {
     expect(motionState.inViewCalls[0]).toEqual({ once: true, amount: 0.25 });
   });
 
-  it("honors the browser media query when Motion still has its hydration fallback", () => {
+  it("honors the browser media query when Motion still has its hydration fallback", async () => {
     vi.stubGlobal(
       "matchMedia",
       vi.fn().mockReturnValue({
@@ -118,11 +118,13 @@ describe("Reveal", () => {
       </Reveal>,
     );
 
-    expect(screen.getByText("Hydration-safe content").parentElement).toHaveAttribute(
-      "data-reduced-motion",
-      "true",
+    await waitFor(() =>
+      expect(screen.getByText("Hydration-safe content").parentElement).toHaveAttribute(
+        "data-reduced-motion",
+        "true",
+      ),
     );
-    expect(motionState.calls[0]).toMatchObject({ initial: false, whileInView: undefined });
+    expect(motionState.calls.at(-1)).toMatchObject({ initial: false, whileInView: undefined });
   });
 });
 

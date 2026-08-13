@@ -16,7 +16,7 @@ const revealedState = { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" };
 
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const target = useRef<HTMLDivElement>(null);
-  const reducedMotion = useKeimaReducedMotion();
+  const reducedMotion = useKeimaReducedMotion(target);
   const motionInView = useInView(target, { once: true, amount: 0.25 });
   const [nativeInView, setNativeInView] = useState(false);
   const isInView = motionInView || nativeInView;
