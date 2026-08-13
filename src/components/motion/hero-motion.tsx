@@ -11,7 +11,7 @@ type HeroMotionProps = {
 
 export function HeroMotion({ children }: HeroMotionProps) {
   const target = useRef<HTMLDivElement>(null);
-  const reducedMotion = useKeimaReducedMotion(target);
+  const reducedMotion = useKeimaReducedMotion();
   const { scrollYProgress } = useScroll({
     target,
     offset: ["start start", "end start"],

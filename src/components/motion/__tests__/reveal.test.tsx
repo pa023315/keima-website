@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HeroMotion } from "@/components/motion/hero-motion";
@@ -21,6 +21,7 @@ const motionState = vi.hoisted(() => ({
   inView: true,
   inViewCalls: [] as unknown[],
 }));
+let observerCallbacks: IntersectionObserverCallback[] = [];
 
 vi.mock("motion/react", async () => {
   const React = await import("react");
@@ -57,6 +58,32 @@ beforeEach(() => {
   motionState.reduced = false;
   motionState.inView = true;
   motionState.inViewCalls.length = 0;
+  observerCallbacks = [];
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn(() => ({
+      addEventListener: vi.fn(),
+      get matches() {
+        return motionState.reduced;
+      },
+      media: "(prefers-reduced-motion: reduce)",
+      onchange: null,
+      removeEventListener: vi.fn(),
+    })),
+  );
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class IntersectionObserverStub {
+      disconnect = vi.fn();
+      observe = vi.fn();
+      unobserve = vi.fn();
+      takeRecords = vi.fn(() => []);
+
+      constructor(callback: IntersectionObserverCallback) {
+        observerCallbacks.push(callback);
+      }
+    },
+  );
 });
 
 afterEach(() => {
@@ -65,7 +92,7 @@ afterEach(() => {
 });
 
 describe("Reveal", () => {
-  it("renders reduced-motion content immediately without a hidden or displaced initial state", () => {
+  it("renders reduced-motion content immediately without a hidden or displaced initial state", async () => {
     motionState.reduced = true;
 
     render(
@@ -74,14 +101,14 @@ describe("Reveal", () => {
       </Reveal>,
     );
 
-    const wrapper = screen.getByText("Visible content").parentElement;
-    expect(wrapper).toHaveAttribute("data-reduced-motion", "true");
+    const wrapper = screen.getByText("Visible content").closest("[data-reduced-motion]");
+    await waitFor(() => expect(wrapper).toHaveAttribute("data-reduced-motion", "true"));
     expect(screen.getByText("Visible content")).toBeVisible();
-    expect(motionState.calls[0]).toMatchObject({ initial: false, whileInView: undefined });
-    expect(motionState.calls[0]?.style).toBeUndefined();
+    expect(motionState.calls.at(-1)).toMatchObject({ initial: false, whileInView: undefined });
+    expect(motionState.calls.at(-1)?.style).toBeUndefined();
   });
 
-  it("reveals once with controlled displacement, clipping, duration, and easing", () => {
+  it("arms offscreen, then reveals once with controlled displacement, duration, and easing", () => {
     render(
       <Reveal delay={0.12}>
         <span>Animated content</span>
@@ -90,14 +117,32 @@ describe("Reveal", () => {
 
     expect(motionState.calls[0]).toEqual(
       expect.objectContaining({
-        initial: { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" },
-        animate: { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" },
-        whileInView: { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" },
+        initial: false,
+        animate: undefined,
+        whileInView: undefined,
         viewport: { once: true, amount: 0.25 },
         transition: { duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] },
       }),
     );
-    expect(motionState.inViewCalls[0]).toEqual({ once: true, amount: 0.25 });
+
+    act(() =>
+      observerCallbacks[0]([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver),
+    );
+    expect(motionState.calls.at(-1)).toEqual(
+      expect.objectContaining({
+        animate: { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" },
+        whileInView: undefined,
+      }),
+    );
+
+    act(() =>
+      observerCallbacks[0]([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver),
+    );
+    expect(motionState.calls.at(-1)?.animate).toEqual({
+      opacity: 1,
+      y: 0,
+      clipPath: "inset(0 0 0% 0)",
+    });
   });
 
   it("honors the browser media query when Motion still has its hydration fallback", async () => {
@@ -119,17 +164,38 @@ describe("Reveal", () => {
     );
 
     await waitFor(() =>
-      expect(screen.getByText("Hydration-safe content").parentElement).toHaveAttribute(
+      expect(screen.getByText("Hydration-safe content").closest("[data-reduced-motion]")).toHaveAttribute(
         "data-reduced-motion",
         "true",
       ),
     );
     expect(motionState.calls.at(-1)).toMatchObject({ initial: false, whileInView: undefined });
   });
+
+  it("does not auto-reveal an offscreen heading after 1.2 seconds", () => {
+    motionState.inView = false;
+    vi.useFakeTimers();
+    render(
+      <Reveal>
+        <span>Offscreen heading</span>
+      </Reveal>,
+    );
+
+    act(() =>
+      observerCallbacks[0]([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver),
+    );
+    act(() => vi.advanceTimersByTime(1200));
+    expect(motionState.calls.at(-1)?.animate).not.toEqual({
+      opacity: 1,
+      y: 0,
+      clipPath: "inset(0 0 0% 0)",
+    });
+    vi.useRealTimers();
+  });
 });
 
 describe("HeroMotion", () => {
-  it("uses zero transform and exposes its reduced-motion state", () => {
+  it("uses zero transform and exposes its reduced-motion state", async () => {
     motionState.reduced = true;
 
     render(
@@ -140,13 +206,13 @@ describe("HeroMotion", () => {
 
     const wrapper = screen.getByRole("heading", { name: "Static hero" }).parentElement;
     expect(wrapper).toHaveClass("hero-motion");
-    expect(wrapper).toHaveAttribute("data-reduced-motion", "true");
-    expect(motionState.calls[0]?.style).toEqual({ y: 0 });
+    await waitFor(() => expect(wrapper).toHaveAttribute("data-reduced-motion", "true"));
+    expect(motionState.calls.at(-1)?.style).toEqual({ y: 0 });
   });
 });
 
 describe("SectionWipe", () => {
-  it("fully reveals reduced-motion content without clipping it", () => {
+  it("fully reveals reduced-motion content without clipping it", async () => {
     motionState.reduced = true;
 
     render(
@@ -158,10 +224,14 @@ describe("SectionWipe", () => {
     const content = screen.getByText("Readable contact");
     const animatedLayer = content.parentElement;
     const wrapper = animatedLayer?.parentElement;
-    expect(wrapper).toHaveAttribute("data-reduced-motion", "true");
+    await waitFor(() => expect(wrapper).toHaveAttribute("data-reduced-motion", "true"));
     expect(content).toBeVisible();
-    expect(motionState.calls[0]?.style).toEqual({
-      "--section-wipe-clip": "inset(0 0 0 0)",
+    expect(motionState.calls.at(-1)?.style).toEqual({
+      "--section-wipe-clip": "inset(0 0 0 0%)",
     });
+    expect(motionState.transformCalls.at(-1)?.output).toEqual([
+      "inset(0 0 0 100%)",
+      "inset(0 0 0 0%)",
+    ]);
   });
 });

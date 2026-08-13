@@ -1,12 +1,10 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
 
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 
-export function useKeimaReducedMotion(target?: RefObject<HTMLElement | null>) {
-  const motionReduced = useReducedMotion();
+export function useKeimaReducedMotion() {
   const [mediaReduced, setMediaReduced] = useState(false);
 
   useEffect(() => {
@@ -19,11 +17,5 @@ export function useKeimaReducedMotion(target?: RefObject<HTMLElement | null>) {
     return () => mediaQuery.removeEventListener("change", updatePreference);
   }, []);
 
-  const reducedMotion = Boolean(motionReduced || mediaReduced);
-
-  useEffect(() => {
-    target?.current?.setAttribute("data-reduced-motion", String(reducedMotion));
-  }, [reducedMotion, target]);
-
-  return reducedMotion;
+  return mediaReduced;
 }

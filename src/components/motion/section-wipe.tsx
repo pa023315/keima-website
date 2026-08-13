@@ -14,11 +14,11 @@ type SectionWipeProps = {
   children: ReactNode;
 };
 
-const fullyRevealed = "inset(0 0 0 0)";
+const fullyRevealed = "inset(0 0 0 0%)";
 
 export function SectionWipe({ children }: SectionWipeProps) {
   const target = useRef<HTMLDivElement>(null);
-  const reducedMotion = useKeimaReducedMotion(target);
+  const reducedMotion = useKeimaReducedMotion();
   const { scrollYProgress } = useScroll({
     target,
     offset: ["start end", "start 35%"],

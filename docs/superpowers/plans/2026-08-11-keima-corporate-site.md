@@ -1304,13 +1304,24 @@ Create `src/components/motion/reveal.tsx`:
 ```tsx
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { useKeimaReducedMotion } from "@/components/motion/use-keima-reduced-motion";
 
 export function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const reduced = Boolean(useReducedMotion());
-  return <motion.div className={className} data-reduced-motion={String(reduced)} initial={reduced ? false : { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" }} whileInView={reduced ? undefined : { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }} viewport={{ once: true, amount: .25 }} transition={{ duration: .8, delay, ease: [.22, 1, .36, 1] }}>{children}</motion.div>;
+  const target = useRef<HTMLDivElement>(null);
+  const reduced = useKeimaReducedMotion();
+  const [motionReady, setMotionReady] = useState(false);
+  const [inView, setInView] = useState(false);
+  // Observe after mount: SSR/no-JS stays visible; the first observer result arms
+  // an offscreen hidden state or reveals once when intersecting.
+  return <div ref={target} className={["reveal", className].filter(Boolean).join(" ")} data-motion-ready={String(motionReady)} data-reduced-motion={String(reduced)}><motion.div className="reveal-content" initial={false} animate={!motionReady || reduced ? undefined : inView ? { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" } : { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" }}>{children}</motion.div></div>;
 }
 ```
+
+Observe the visible outer sentinel and animate only `.reveal-content`; a fully clipped element cannot reliably observe its own viewport entry.
+
+`useKeimaReducedMotion` starts from `false` for SSR and the first hydration render, then reads/subscribes to `matchMedia` in an effect. It does not call Motion's reduced-motion hook or imperatively mutate marker attributes.
 
 - [ ] **Step 4: Implement bounded Hero and section transitions**
 
@@ -1319,12 +1330,12 @@ Create `src/components/motion/hero-motion.tsx`:
 ```tsx
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 
 export function HeroMotion({ children }: { children: React.ReactNode }) {
   const target = useRef<HTMLDivElement>(null);
-  const reduced = Boolean(useReducedMotion());
+  const reduced = useKeimaReducedMotion();
   const { scrollYProgress } = useScroll({ target, offset: ["start start", "end start"] });
   const animatedY = useTransform(scrollYProgress, [0, 1], [0, 48]);
   return <motion.div ref={target} className="hero-motion" data-reduced-motion={String(reduced)} style={{ y: reduced ? 0 : animatedY }}>{children}</motion.div>;
@@ -1338,16 +1349,16 @@ Create `src/components/motion/section-wipe.tsx`:
 ```tsx
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef } from "react";
 
 export function SectionWipe({ children }: { children: React.ReactNode }) {
   const target = useRef<HTMLDivElement>(null);
-  const reduced = Boolean(useReducedMotion());
+  const reduced = useKeimaReducedMotion();
   const { scrollYProgress } = useScroll({ target, offset: ["start end", "start 35%"] });
-  const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(0 0 0 100%)", "inset(0 0 0 0)"]);
+  const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(0 0 0 100%)", "inset(0 0 0 0%)"]);
   useEffect(() => target.current?.setAttribute("data-motion-ready", "true"), []);
-  return <div ref={target} className="section-wipe" data-motion-ready="false" data-reduced-motion={String(reduced)}><motion.div className="section-wipe-content" style={{ "--section-wipe-clip": reduced ? "inset(0 0 0 0)" : clipPath } as MotionStyle}>{children}</motion.div></div>;
+  return <div ref={target} className="section-wipe" data-motion-ready="false" data-reduced-motion={String(reduced)}><motion.div className="section-wipe-content" style={{ "--section-wipe-clip": reduced ? "inset(0 0 0 0%)" : clipPath } as MotionStyle}>{children}</motion.div></div>;
 }
 ```
 
