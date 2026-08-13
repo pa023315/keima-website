@@ -1307,8 +1307,8 @@ Create `src/components/motion/reveal.tsx`:
 import { motion, useReducedMotion } from "motion/react";
 
 export function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const reduced = useReducedMotion();
-  return <motion.div className={className} data-reduced-motion={String(Boolean(reduced))} initial={reduced ? false : { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" }} whileInView={reduced ? undefined : { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }} viewport={{ once: true, amount: .25 }} transition={{ duration: .8, delay, ease: [.22, 1, .36, 1] }}>{children}</motion.div>;
+  const reduced = Boolean(useReducedMotion());
+  return <motion.div className={className} data-reduced-motion={String(reduced)} initial={reduced ? false : { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" }} whileInView={reduced ? undefined : { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }} viewport={{ once: true, amount: .25 }} transition={{ duration: .8, delay, ease: [.22, 1, .36, 1] }}>{children}</motion.div>;
 }
 ```
 
@@ -1324,12 +1324,14 @@ import { useRef } from "react";
 
 export function HeroMotion({ children }: { children: React.ReactNode }) {
   const target = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = Boolean(useReducedMotion());
   const { scrollYProgress } = useScroll({ target, offset: ["start start", "end start"] });
   const animatedY = useTransform(scrollYProgress, [0, 1], [0, 48]);
-  return <motion.div ref={target} style={{ y: reduced ? 0 : animatedY }}>{children}</motion.div>;
+  return <motion.div ref={target} className="hero-motion" data-reduced-motion={String(reduced)} style={{ y: reduced ? 0 : animatedY }}>{children}</motion.div>;
 }
 ```
+
+Disable `.hero-motion` transforms at `max-width: 767px` so the server-visible heading remains stable while mobile avoids parallax work.
 
 Create `src/components/motion/section-wipe.tsx`:
 
@@ -1337,37 +1339,40 @@ Create `src/components/motion/section-wipe.tsx`:
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export function SectionWipe({ children }: { children: React.ReactNode }) {
   const target = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  const reduced = Boolean(useReducedMotion());
   const { scrollYProgress } = useScroll({ target, offset: ["start end", "start 35%"] });
-  const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(0 0 0 100%)", "inset(0 0 0 0%)"]);
-  return <div ref={target} className="section-wipe"><motion.div className="section-wipe-content" style={{ clipPath: reduced ? "inset(0 0 0 0%)" : clipPath }}>{children}</motion.div></div>;
+  const clipPath = useTransform(scrollYProgress, [0, 1], ["inset(0 0 0 100%)", "inset(0 0 0 0)"]);
+  useEffect(() => target.current?.setAttribute("data-motion-ready", "true"), []);
+  return <div ref={target} className="section-wipe" data-motion-ready="false" data-reduced-motion={String(reduced)}><motion.div className="section-wipe-content" style={{ "--section-wipe-clip": reduced ? "inset(0 0 0 0)" : clipPath } as MotionStyle}>{children}</motion.div></div>;
 }
 ```
+
+Gate `.section-wipe-content` clipping behind `[data-motion-ready="true"]`; static/no-JS HTML keeps `clip-path: none`, and mobile plus reduced-motion modes keep the Contact section fully revealed.
 
 In `hero.tsx`, import `HeroMotion` and replace the H1 line with:
 
 ```tsx
-<HeroMotion><h1 id="hero-title" className="display">{content.hero.statement.status === "pending" ? content.hero.statement.label : content.hero.statement.value}</h1></HeroMotion>
+<HeroMotion><h1 id="hero-title" className="hero-title">{statement}</h1></HeroMotion>
 ```
 
 In `about.tsx` and `services.tsx`, import `Reveal` and wrap only each section H2:
 
 ```tsx
-<Reveal className="about-heading"><h2>{content.about.label}</h2></Reveal>
+<div className="about-heading"><p className="section-kicker">KEIMA</p><Reveal><h2 id="about-title" className="section-title">{about.label}</h2></Reveal></div>
 ```
 
 ```tsx
-<Reveal><h2 id="services-title">{content.servicesLabel}</h2></Reveal>
+<Reveal><h2 id="services-title" className="section-title">{content.servicesLabel}</h2></Reveal>
 ```
 
 In `contact.tsx`, import `SectionWipe` and return:
 
 ```tsx
-return <SectionWipe><section id="contact" className="contact" aria-labelledby="contact-title"><p>{content.contact.label}</p><h2 id="contact-title">{email.status === "ready" ? <a href={`mailto:${email.value}`}>{email.value}</a> : email.label}</h2></section></SectionWipe>;
+return <SectionWipe><section id="contact" className="content-section section-grid contact" aria-labelledby="contact-title">{/* Keep the existing validated email and section structure intact. */}</section></SectionWipe>;
 ```
 
 Do not animate the official Logo files.
@@ -1375,8 +1380,11 @@ Do not animate the official Logo files.
 Add:
 
 ```css
-.section-wipe { position: relative; background: var(--keima-paper); }
+.section-wipe { position: relative; overflow: clip; background: var(--keima-paper); }
 .section-wipe-content { position: relative; background: var(--keima-ink); }
+.section-wipe[data-motion-ready="true"] .section-wipe-content { clip-path: var(--section-wipe-clip); }
+.section-wipe:not([data-motion-ready="true"]) .section-wipe-content { clip-path: none !important; }
+@media (max-width: 767px) { .hero-motion { transform: none !important; } .section-wipe-content { clip-path: none !important; } }
 ```
 
 - [ ] **Step 5: Add the CSS reduced-motion safety net**

@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { MediaPlaceholder } from "@/components/media-placeholder";
+import { Reveal } from "@/components/motion/reveal";
 import type { ContentState, LocaleContent, ServiceContent } from "@/content/site-content";
 
 type ServicesProps = {
@@ -115,9 +116,11 @@ export function Services({ content }: ServicesProps) {
         <p className="section-index" aria-hidden="true">
           <span>03</span>
         </p>
-        <h2 id="services-title" className="section-title">
-          {content.servicesLabel}
-        </h2>
+        <Reveal>
+          <h2 id="services-title" className="section-title">
+            {content.servicesLabel}
+          </h2>
+        </Reveal>
       </div>
 
       <ol className="services-list">

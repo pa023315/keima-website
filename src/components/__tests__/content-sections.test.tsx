@@ -1,5 +1,5 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
@@ -9,7 +9,28 @@ import { siteContent, type LocaleContent } from "@/content/site-content";
 
 const zhContent = siteContent["zh-TW"];
 
-afterEach(cleanup);
+class IntersectionObserverStub implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "";
+  readonly scrollMargin = "";
+  readonly thresholds = [];
+
+  disconnect() {}
+  observe() {}
+  takeRecords() {
+    return [];
+  }
+  unobserve() {}
+}
+
+beforeEach(() => {
+  vi.stubGlobal("IntersectionObserver", IntersectionObserverStub);
+});
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 function renderReadyServiceUrl(value: string) {
   const content: LocaleContent = {

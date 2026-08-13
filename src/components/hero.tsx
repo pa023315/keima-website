@@ -1,3 +1,4 @@
+import { HeroMotion } from "@/components/motion/hero-motion";
 import type { LocaleContent } from "@/content/site-content";
 
 type HeroProps = {
@@ -14,9 +15,11 @@ export function Hero({ content }: HeroProps) {
     <section id="home" className="hero" aria-labelledby="hero-title">
       <div className="hero-cut" aria-hidden="true" />
       <p className="hero-eyebrow">{content.hero.eyebrow}</p>
-      <h1 id="hero-title" className="hero-title">
-        {statement}
-      </h1>
+      <HeroMotion>
+        <h1 id="hero-title" className="hero-title">
+          {statement}
+        </h1>
+      </HeroMotion>
       <a className="hero-scroll" href="#about">
         <span aria-hidden="true">01—</span>
         {content.hero.scroll}

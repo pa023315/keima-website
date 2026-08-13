@@ -199,10 +199,14 @@ a {
   text-transform: uppercase;
 }
 
-.hero-title {
+.hero-motion {
   z-index: 2;
   grid-column: 1 / span 10;
   align-self: center;
+  will-change: transform;
+}
+
+.hero-title {
   max-width: 10ch;
   margin: clamp(2rem, 6vh, 5.5rem) 0;
   font-family: var(--font-latin), var(--font-cjk), sans-serif;
@@ -497,6 +501,27 @@ a {
   color: var(--accent-hover);
 }
 
+.section-wipe {
+  position: relative;
+  overflow: clip;
+  background: var(--keima-paper);
+}
+
+.section-wipe-content {
+  position: relative;
+  background: var(--keima-ink);
+  will-change: clip-path;
+}
+
+.section-wipe[data-motion-ready="true"] .section-wipe-content {
+  clip-path: var(--section-wipe-clip);
+}
+
+/* Keep static HTML readable; scroll clipping starts only after client readiness. */
+.section-wipe:not([data-motion-ready="true"]) .section-wipe-content {
+  clip-path: none !important;
+}
+
 .contact {
   position: relative;
   min-height: 92svh;
@@ -777,9 +802,14 @@ a {
     grid-column: 1 / span 8;
   }
 
-  .hero-title {
+  .hero-motion {
     grid-column: 1 / -1;
     align-self: center;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .hero-title {
     max-width: 9ch;
     margin: 1.5rem 0;
     font-size: clamp(3.25rem, 17vw, 5.5rem);
@@ -907,6 +937,11 @@ a {
     width: 52%;
   }
 
+  .section-wipe-content {
+    clip-path: none !important;
+    will-change: auto;
+  }
+
   .site-footer {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: start;
@@ -940,5 +975,31 @@ a {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-cut,
+  .hero-motion {
+    transform: none !important;
+  }
+
+  .hero-motion,
+  .section-wipe-content {
+    will-change: auto;
+  }
+
+  [data-reduced-motion],
+  [data-reduced-motion] .section-wipe-content {
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

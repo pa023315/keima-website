@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { MediaPlaceholder } from "@/components/media-placeholder";
+import { Reveal } from "@/components/motion/reveal";
 import type { LocaleContent } from "@/content/site-content";
 
 type AboutProps = {
@@ -19,9 +20,11 @@ export function About({ content }: AboutProps) {
 
       <div className="about-heading">
         <p className="section-kicker">KEIMA</p>
-        <h2 id="about-title" className="section-title">
-          {about.label}
-        </h2>
+        <Reveal>
+          <h2 id="about-title" className="section-title">
+            {about.label}
+          </h2>
+        </Reveal>
       </div>
 
       <div className="about-portrait">
