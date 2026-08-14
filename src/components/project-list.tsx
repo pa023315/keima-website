@@ -36,11 +36,15 @@ function ProjectRow({ project, index }: { project: ProjectContent; index: number
     <li className="project-row" data-link-state={href ? "ready" : "pending"}>
       <Reveal delay={index * 0.06}>
         {href ? (
-          <a href={href} aria-label={`${project.title} — ${project.label}`}>
+          <a
+            className="project-row-content"
+            href={href}
+            aria-label={`${project.title} — ${project.label}`}
+          >
             {rowContent}
           </a>
         ) : (
-          <div>{rowContent}</div>
+          <div className="project-row-content">{rowContent}</div>
         )}
       </Reveal>
     </li>

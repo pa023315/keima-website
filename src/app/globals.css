@@ -1162,9 +1162,7 @@ a {
 }
 
 .approach-row .reveal-content,
-.project-row .reveal-content,
-.project-row a,
-.project-row div {
+.project-row-content {
   display: grid;
   grid-template-columns: minmax(3rem, 0.45fr) minmax(11rem, 2fr) minmax(10rem, 1.25fr) minmax(16rem, 2.4fr) auto;
   gap: clamp(0.75rem, 1.6vw, 2rem);
@@ -1172,7 +1170,7 @@ a {
   padding: clamp(1.2rem, 2.4vw, 2.25rem) 0;
 }
 
-.project-row a {
+.project-row a.project-row-content {
   text-decoration: none;
 }
 
@@ -1406,9 +1404,7 @@ a {
   }
 
   .approach-row .reveal-content,
-  .project-row .reveal-content,
-  .project-row a,
-  .project-row div {
+  .project-row-content {
     grid-template-columns: minmax(2.5rem, 0.35fr) minmax(10rem, 1.3fr) minmax(0, 1fr);
   }
 
@@ -1457,11 +1453,14 @@ a {
   }
 
   .approach-row .reveal-content,
-  .project-row .reveal-content,
-  .project-row a,
-  .project-row div {
+  .project-row-content {
     grid-template-columns: 2.25rem minmax(0, 1fr);
     align-items: start;
+  }
+
+  .project-row-content {
+    gap: 0.5rem 0.85rem;
+    padding: 1.15rem 0;
   }
 
   .approach-row h3,

@@ -97,3 +97,19 @@ test("reduced motion keeps content visible", async ({ page }) => {
   await expect(page.locator("#contact")).toBeVisible();
   await expect(page.locator("[data-reduced-motion='true']").first()).toBeVisible();
 });
+
+test("mobile project rows stay compact enough for a paced long-scroll section", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh-TW/");
+
+  const rowHeights = await page.locator(".project-row").evaluateAll((rows) =>
+    rows.map((row) => Math.round(row.getBoundingClientRect().height)),
+  );
+  const sectionHeight = await page
+    .locator("#in-motion")
+    .evaluate((section) => Math.round(section.getBoundingClientRect().height));
+
+  expect(rowHeights).toHaveLength(4);
+  expect(Math.max(...rowHeights)).toBeLessThanOrEqual(260);
+  expect(sectionHeight).toBeLessThanOrEqual(1500);
+});
