@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { createSiteMetadata } from "@/lib/site-metadata";
+import robots from "@/app/robots";
+import sitemap from "@/app/sitemap";
 
 describe("createSiteMetadata", () => {
-  it("sets English canonical and language alternate URLs", () => {
+  it("sets English canonical, language alternates, and social metadata", () => {
     const metadata = createSiteMetadata("en");
 
     expect(metadata.alternates).toEqual({
@@ -12,6 +14,41 @@ describe("createSiteMetadata", () => {
         "zh-TW": "/zh-TW/",
         en: "/en/",
       },
+    });
+    expect(metadata.icons).toEqual({ icon: "/favicon.svg" });
+    expect(metadata.openGraph).toMatchObject({
+      type: "website",
+      locale: "en_US",
+      url: "/en/",
+      siteName: "KEIMA",
+    });
+  });
+
+  it("keeps unfinished local metadata out of the search index", () => {
+    const metadata = createSiteMetadata("zh-TW");
+
+    expect(metadata.metadataBase).toEqual(new URL("https://keima.example"));
+    expect(metadata.robots).toEqual({ index: false, follow: false });
+    expect(metadata.openGraph).toMatchObject({
+      locale: "zh_TW",
+      url: "/zh-TW/",
+      siteName: "KEIMA",
+    });
+  });
+});
+
+describe("metadata routes", () => {
+  it("lists both locale routes in the sitemap", () => {
+    expect(sitemap()).toEqual([
+      { url: "https://keima.example/zh-TW/", changeFrequency: "monthly", priority: 1 },
+      { url: "https://keima.example/en/", changeFrequency: "monthly", priority: 1 },
+    ]);
+  });
+
+  it("allows crawling but points crawlers at the generated sitemap", () => {
+    expect(robots()).toEqual({
+      rules: { userAgent: "*", allow: "/" },
+      sitemap: "https://keima.example/sitemap.xml",
     });
   });
 });

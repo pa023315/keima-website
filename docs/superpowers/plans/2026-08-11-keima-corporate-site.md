@@ -1437,7 +1437,7 @@ git commit -m "feat: add controlled KEIMA motion system"
 - Modify: `src/lib/site-metadata.ts`
 - Create: `tests/e2e/site.spec.ts`
 
-- [ ] **Step 1: Write failing browser acceptance tests**
+- [x] **Step 1: Write failing browser acceptance tests**
 
 Create `tests/e2e/site.spec.ts`:
 
@@ -1480,7 +1480,7 @@ test("section navigation exposes the active location", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Run a production build, then the browser tests to expose remaining gaps**
+- [x] **Step 2: Run a production build, then the browser tests to expose remaining gaps**
 
 Run:
 
@@ -1490,9 +1490,9 @@ npx playwright install chromium webkit
 npm run test:e2e
 ```
 
-Expected before metadata work: section tests pass; any browser failure names the exact missing static or layout behavior to correct.
+Observed RED: metadata tests failed because `src/app/sitemap.ts` and `src/app/robots.ts` did not exist. The first e2e run also exposed environment setup gaps: sandboxed port binding required approval, and WebKit needed `npx playwright install webkit`.
 
-- [ ] **Step 3: Implement sitemap and robots**
+- [x] **Step 3: Implement sitemap and robots**
 
 Create `src/app/sitemap.ts`:
 
@@ -1535,7 +1535,7 @@ export function createSiteMetadata(locale: Locale): Metadata {
 
 This prevents unfinished brand copy from being indexed if someone uploads the local output accidentally. Remove this no-index state only after formal copy, a real production domain, and an approved social-preview image are provided.
 
-- [ ] **Step 4: Verify all browser acceptance tests pass at required breakpoints**
+- [x] **Step 4: Verify all browser acceptance tests pass at required breakpoints**
 
 Append this exact viewport test to `tests/e2e/site.spec.ts`:
 
@@ -1566,9 +1566,9 @@ npm run build
 npm run test:e2e
 ```
 
-Expected: all bilingual, email, logo, console, and overflow checks PASS in desktop and mobile projects.
+Observed GREEN: production build generated `/zh-TW`, `/en`, `/robots.txt`, and `/sitemap.xml`. Playwright passed 45/45 across desktop Chromium, desktop WebKit, and mobile WebKit after installing WebKit.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/sitemap.ts src/app/robots.ts src/lib/site-metadata.ts tests/e2e/site.spec.ts

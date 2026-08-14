@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/locales";
 
-const metadataByLocale: Record<Locale, Pick<Metadata, "title" | "description">> = {
+type LocaleMetadata = {
+  title: string;
+  description: string;
+};
+
+const metadataByLocale: Record<Locale, LocaleMetadata> = {
   "zh-TW": {
     title: "KEIMA／桂馬數位｜品牌資訊待補",
     description: "KEIMA 桂馬數位企業形象網站，正式品牌文案待提供。",
@@ -14,9 +19,12 @@ const metadataByLocale: Record<Locale, Pick<Metadata, "title" | "description">> 
 };
 
 export function createSiteMetadata(locale: Locale): Metadata {
+  const metadata = metadataByLocale[locale];
+  const isZh = locale === "zh-TW";
+
   return {
     metadataBase: new URL("https://keima.example"),
-    ...metadataByLocale[locale],
+    ...metadata,
     alternates: {
       canonical: `/${locale}/`,
       languages: {
@@ -24,7 +32,15 @@ export function createSiteMetadata(locale: Locale): Metadata {
         en: "/en/",
       },
     },
-    icons: "/favicon.svg",
+    icons: { icon: "/favicon.svg" },
+    openGraph: {
+      type: "website",
+      locale: isZh ? "zh_TW" : "en_US",
+      title: metadata.title,
+      description: metadata.description,
+      url: `/${locale}/`,
+      siteName: "KEIMA",
+    },
     robots: {
       index: false,
       follow: false,
