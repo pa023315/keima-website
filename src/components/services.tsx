@@ -63,7 +63,7 @@ function ServiceItem({
 
   return (
     <li
-      className="service-item"
+      className="service-item service-card"
       data-content-status={service.status.status}
       data-motion-accent="service-card"
     >
@@ -120,16 +120,25 @@ function ServiceItem({
 }
 
 export function Services({ content }: ServicesProps) {
+  const summary =
+    content.locale === "zh-TW"
+      ? "已公開營運中的內容與產業資訊品牌"
+      : "Public operating brands across content and industry information";
+
   return (
     <section
       id="services"
       className="content-section section-grid services"
-      aria-label={content.servicesLabel}
+      aria-labelledby="services-title"
     >
       <div className="services-intro">
         <p className="section-index" aria-hidden="true">
           <span>03</span>
         </p>
+        <h2 id="services-title" className="services-title">
+          {content.servicesLabel}
+        </h2>
+        <p className="services-summary">{summary}</p>
       </div>
 
       <ol className="services-list">

@@ -102,14 +102,21 @@ describe("About", () => {
 });
 
 describe("Services", () => {
-  it("renders the three sourced operating brands without a visible section title", () => {
+  it("renders the three sourced operating brands as an editorial brand card grid", () => {
     render(<Services content={zhContent} />);
 
     expect(screen.queryByText("運作中服務")).not.toBeInTheDocument();
     const section = screen.getByRole("region", { name: "營運品牌" });
+    expect(within(section).getByRole("heading", { name: "營運品牌" })).toHaveClass(
+      "services-title",
+    );
+    expect(within(section).getByText("已公開營運中的內容與產業資訊品牌")).toHaveClass(
+      "services-summary",
+    );
     const services = within(section).getAllByRole("listitem");
 
     expect(services).toHaveLength(3);
+    expect(services[0]).toHaveClass("service-card");
     expect(within(section).getByRole("heading", { name: "INDIE-GUIDER" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "Jobsgame" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "GameCF" })).toBeVisible();
