@@ -380,74 +380,82 @@ a {
   grid-row: 1;
 }
 
-.about-brand {
-  grid-column: 3 / 8;
+.about-brand-panel {
+  grid-column: 3 / 10;
   grid-row: 1;
 }
 
-.about-brand-title {
-  max-width: 8ch;
-}
-
-.about-tagline {
-  max-width: 30rem;
-  margin: 1.6rem 0 0;
-  color: var(--accent-hover);
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  font-style: italic;
+.about-lead {
+  max-width: 18ch;
+  margin: 0;
+  color: var(--keima-ink);
+  font-size: clamp(2.4rem, 5.2vw, 6.1rem);
   font-weight: 650;
-  letter-spacing: 0;
-  line-height: 1.35;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
 .about-copy {
-  max-width: 44rem;
-  margin-top: clamp(2rem, 4vw, 4rem);
+  display: grid;
+  max-width: 52rem;
+  margin-top: clamp(2.25rem, 5vw, 5rem);
+  gap: clamp(1.05rem, 2vw, 1.6rem);
 }
 
 .about-copy p {
-  margin: 1.2rem 0 0;
+  max-width: 42rem;
+  margin: 0;
   color: var(--text-primary);
-  font-size: clamp(1.05rem, 1.35vw, 1.35rem);
-  line-height: 1.75;
+  font-size: clamp(1.05rem, 1.25vw, 1.28rem);
+  letter-spacing: 0.01em;
+  line-height: 1.9;
 }
 
-.about-copy .lead {
-  font-size: clamp(1.3rem, 2vw, 2rem);
-  font-weight: 680;
-  letter-spacing: -0.02em;
-  line-height: 1.35;
+.about-copy p:first-child {
+  padding-top: clamp(1.25rem, 2vw, 1.75rem);
+  border-top: 1px solid var(--border-primary);
 }
 
 .about-portrait {
+  grid-column: 10 / 13;
+  grid-row: 2;
+  align-self: start;
+  aspect-ratio: 3 / 4;
+  margin-top: clamp(1rem, 3vw, 3rem);
+}
+
+.about-portrait--compact {
+  width: min(100%, clamp(10rem, 15vw, 14rem));
+  justify-self: end;
+}
+
+.about-person-panel {
   grid-column: 3 / 9;
   grid-row: 2;
-  aspect-ratio: 4 / 5;
+  align-self: start;
+  margin-top: clamp(3rem, 6vw, 6rem);
+  padding: clamp(1.4rem, 2.5vw, 2rem) 0 0;
+  border-top: 1px solid var(--keima-ink);
 }
 
-.about-person {
-  grid-column: 9 / 13;
-  grid-row: 2;
-  align-self: end;
-  padding-bottom: clamp(1rem, 4vw, 4.5rem);
-}
-
-.about-person h3 {
-  max-width: 14ch;
+.about-person-panel h3 {
+  max-width: 18ch;
   margin: 1.1rem 0 0;
-  font-size: clamp(1.8rem, 3vw, 3.8rem);
+  font-size: clamp(1.9rem, 3vw, 3.25rem);
   font-weight: 650;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
 }
 
-.about-person p:not(.section-kicker) {
-  max-width: 22ch;
-  margin: 1.4rem 0 0;
-  font-size: clamp(1.35rem, 2.2vw, 2.4rem);
-  font-weight: 560;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
+.about-person-panel p:not(.section-kicker) {
+  max-width: 34rem;
+  margin: 1.25rem 0 0;
+  color: var(--text-primary);
+  font-size: clamp(1.05rem, 1.3vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.75;
 }
 
 .field-rule {
@@ -875,16 +883,16 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .about-heading {
-    grid-column: 2 / 5;
+  .about-brand-panel {
+    grid-column: 2 / 7;
   }
 
   .about-portrait {
-    grid-column: 2 / 5;
+    grid-column: 5 / 7;
   }
 
-  .about-person {
-    grid-column: 5 / 7;
+  .about-person-panel {
+    grid-column: 2 / 5;
   }
 
   .services-intro {
@@ -1052,29 +1060,21 @@ a {
   }
 
   .about-index,
-  .about-brand,
+  .about-brand-panel,
   .about-portrait,
-  .about-person {
+  .about-person-panel {
     grid-column: 1 / -1;
     grid-row: auto;
   }
 
-  .about-brand {
-    margin: 1rem 0 0 calc((100% + 0.75rem) / 4);
+  .about-brand-panel {
+    margin-top: 1rem;
   }
 
-  .about-brand-title {
-    max-width: 7ch;
-  }
-
-  [data-locale="en"] .about-brand {
-    margin-left: 0;
-  }
-
-  [data-locale="en"] .about-brand-title {
+  .about-lead {
     max-width: 100%;
-    font-size: clamp(2.75rem, 12vw, 4rem);
-    overflow-wrap: break-word;
+    font-size: clamp(2.25rem, 10vw, 4rem);
+    line-height: 1.08;
   }
 
   .about-copy {
@@ -1082,21 +1082,25 @@ a {
   }
 
   .about-portrait {
-    margin-top: 1rem;
+    width: min(62vw, 13rem);
+    max-width: none;
+    margin-top: 0;
+    justify-self: start;
   }
 
-  .about-person {
-    padding: 0 0 0 calc((100% + 0.75rem) / 4);
+  .about-person-panel {
+    margin-top: 0;
+    padding-top: 1.4rem;
   }
 
-  .about-person h3 {
-    max-width: 12ch;
-    font-size: clamp(2.3rem, 10vw, 3.6rem);
+  .about-person-panel h3 {
+    max-width: 100%;
+    font-size: clamp(2rem, 8vw, 3rem);
   }
 
-  .about-person p:not(.section-kicker) {
-    max-width: 18ch;
-    font-size: clamp(1.5rem, 7vw, 2rem);
+  .about-person-panel p:not(.section-kicker) {
+    max-width: 100%;
+    font-size: clamp(1.05rem, 4.8vw, 1.35rem);
   }
 
   .services-intro,

@@ -10,6 +10,7 @@ type AboutProps = {
 
 export function About({ content }: AboutProps) {
   const { about } = content;
+  const [lead, ...supportingIntro] = about.brand.intro;
 
   return (
     <section id="about" className="content-section section-grid about" aria-labelledby="about-title">
@@ -17,24 +18,22 @@ export function About({ content }: AboutProps) {
         <span>02</span>
       </p>
 
-      <div className="about-brand">
-        <p className="section-kicker">{about.brand.label}</p>
+      <div className="about-brand-panel">
         <Reveal>
-          <h2 id="about-title" className="section-title about-brand-title">
-            {about.brand.headline}
+          <h2 id="about-title" className="about-lead">
+            {lead}
           </h2>
         </Reveal>
-        <p className="about-tagline">{about.brand.tagline}</p>
         <div className="about-copy">
-          {about.brand.intro.map((paragraph, index) => (
-            <p key={paragraph} className={index === 0 || index === about.brand.intro.length - 1 ? "lead" : undefined}>
+          {supportingIntro.map((paragraph) => (
+            <p key={paragraph}>
               {paragraph}
             </p>
           ))}
         </div>
       </div>
 
-      <div className="about-portrait">
+      <div className="about-portrait about-portrait--compact">
         {about.portrait.status === "ready" ? (
           <Image
             className="editorial-image"
@@ -49,7 +48,7 @@ export function About({ content }: AboutProps) {
         )}
       </div>
 
-      <div className="about-person">
+      <div className="about-person-panel">
         <span className="field-rule" aria-hidden="true" />
         <p className="section-kicker">{about.person.label}</p>
         <h3>{about.person.name}</h3>
