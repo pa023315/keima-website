@@ -83,9 +83,17 @@ describe("About", () => {
     });
     const brandPanel = about.querySelector(".about-brand-panel");
     const personPanel = about.querySelector(".about-person-panel");
+    const portrait = screen.getByRole("img", { name: "人物照片待提供" }).closest(".about-portrait");
+    const role = screen.getByText("桂馬數位 專案顧問");
+    const name = screen.getByRole("heading", { name: "鄭祤呈" });
 
     expect(brandPanel).toBeInTheDocument();
     expect(personPanel).toBeInTheDocument();
+    expect(brandPanel?.querySelector(".about-portrait")).not.toBeInTheDocument();
+    expect(personPanel?.querySelector(".about-portrait")).toBe(portrait);
+    expect(personPanel?.querySelector(".about-person-role")).toBe(role);
+    expect(personPanel?.querySelector(".about-person-name")).toBe(name);
+    expect(portrait?.compareDocumentPosition(role)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(brandPanel?.compareDocumentPosition(personPanel as Element)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
@@ -93,11 +101,11 @@ describe("About", () => {
       screen.getByText("KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。"),
     ).toBeVisible();
     expect(screen.getByText("人物資訊")).toBeVisible();
-    expect(screen.getByRole("heading", { name: "桂馬數位 專案顧問 / 鄭祤呈" })).toBeVisible();
+    expect(role).toBeVisible();
+    expect(name).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "桂馬數位 專案顧問 / 鄭祤呈" })).not.toBeInTheDocument();
     expect(screen.getByText(/具10年活動企劃、8年群眾募資顧問經驗/)).toBeVisible();
-    expect(screen.getByRole("img", { name: "人物照片待提供" }).closest(".about-portrait")).toHaveClass(
-      "about-portrait--compact",
-    );
+    expect(portrait).toHaveClass("about-portrait--compact");
   });
 });
 

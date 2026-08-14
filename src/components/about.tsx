@@ -11,6 +11,23 @@ type AboutProps = {
 export function About({ content }: AboutProps) {
   const { about } = content;
   const [lead, ...supportingIntro] = about.brand.intro;
+  const [personRole, personName = about.person.name] = about.person.name
+    .split("/")
+    .map((part) => part.trim());
+
+  const portrait =
+    about.portrait.status === "ready" ? (
+      <Image
+        className="editorial-image"
+        src={about.portrait.value}
+        alt={personName}
+        width="960"
+        height="1200"
+        unoptimized
+      />
+    ) : (
+      <MediaPlaceholder label={about.portrait.label} />
+    );
 
   return (
     <section id="about" className="content-section section-grid about" aria-labelledby="about-title">
@@ -33,26 +50,15 @@ export function About({ content }: AboutProps) {
         </div>
       </div>
 
-      <div className="about-portrait about-portrait--compact">
-        {about.portrait.status === "ready" ? (
-          <Image
-            className="editorial-image"
-            src={about.portrait.value}
-            alt={about.person.name}
-            width="960"
-            height="1200"
-            unoptimized
-          />
-        ) : (
-          <MediaPlaceholder label={about.portrait.label} />
-        )}
-      </div>
-
       <div className="about-person-panel">
-        <span className="field-rule" aria-hidden="true" />
-        <p className="section-kicker">{about.person.label}</p>
-        <h3>{about.person.name}</h3>
-        <p>{about.person.bio}</p>
+        <div className="about-portrait about-portrait--compact">{portrait}</div>
+        <div className="about-person-copy">
+          <span className="field-rule" aria-hidden="true" />
+          <p className="section-kicker">{about.person.label}</p>
+          <p className="about-person-role">{personRole}</p>
+          <h3 className="about-person-name">{personName}</h3>
+          <p>{about.person.bio}</p>
+        </div>
       </div>
     </section>
   );
