@@ -57,14 +57,14 @@ describe("Hero", () => {
     expect(within(hero).getByRole("img", { name: "KEIMA 桂馬數位" })).toHaveClass(
       "hero-logo",
     );
+    expect(
+      within(hero).getByRole("img", { name: "KEIMA 桂馬數位" }).closest(".hero-mark"),
+    ).toBeInTheDocument();
     expect(within(hero).getByRole("heading", { name: "跨越既有路徑，連結新的可能。" })).toHaveClass(
       "hero-reveal",
       "hero-subtitle",
     );
-    expect(screen.getByRole("link", { name: /向下探索/ })).toHaveClass(
-      "hero-reveal",
-      "hero-reveal--scroll",
-    );
+    expect(screen.queryByRole("link", { name: /向下探索/ })).not.toBeInTheDocument();
   });
 });
 

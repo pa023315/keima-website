@@ -22,7 +22,7 @@ export function Hero({ content }: HeroProps) {
     >
       <div className="hero-cut" aria-hidden="true" />
       <HeroMotion>
-        <div className="hero-logo-display hero-reveal hero-reveal--logo">
+        <div className="hero-mark hero-reveal hero-reveal--logo">
           <Image
             className="hero-logo"
             src="/brand/keima-lockup-color.svg"
@@ -32,15 +32,11 @@ export function Hero({ content }: HeroProps) {
             priority
             unoptimized
           />
+          <h1 id="hero-title" className="hero-subtitle hero-reveal hero-reveal--subtitle">
+            {statement}
+          </h1>
         </div>
-        <h1 id="hero-title" className="hero-subtitle hero-reveal hero-reveal--subtitle">
-          {statement}
-        </h1>
       </HeroMotion>
-      <a className="hero-scroll hero-reveal hero-reveal--scroll" href="#about">
-        <span aria-hidden="true">01—</span>
-        {content.hero.scroll}
-      </a>
     </section>
   );
 }
