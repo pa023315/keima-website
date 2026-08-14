@@ -10,7 +10,6 @@ type AboutProps = {
 
 export function About({ content }: AboutProps) {
   const { about } = content;
-  const person = about.person.status === "ready" ? about.person.value : about.person.label;
 
   return (
     <section id="about" className="content-section section-grid about" aria-labelledby="about-title">
@@ -18,13 +17,21 @@ export function About({ content }: AboutProps) {
         <span>02</span>
       </p>
 
-      <div className="about-heading">
-        <p className="section-kicker">KEIMA</p>
+      <div className="about-brand">
+        <p className="section-kicker">{about.brand.label}</p>
         <Reveal>
-          <h2 id="about-title" className="section-title">
-            {about.label}
+          <h2 id="about-title" className="section-title about-brand-title">
+            {about.brand.headline}
           </h2>
         </Reveal>
+        <p className="about-tagline">{about.brand.tagline}</p>
+        <div className="about-copy">
+          {about.brand.intro.map((paragraph, index) => (
+            <p key={paragraph} className={index === 0 || index === about.brand.intro.length - 1 ? "lead" : undefined}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div className="about-portrait">
@@ -32,7 +39,7 @@ export function About({ content }: AboutProps) {
           <Image
             className="editorial-image"
             src={about.portrait.value}
-            alt={about.label}
+            alt={about.person.name}
             width="960"
             height="1200"
             unoptimized
@@ -42,9 +49,11 @@ export function About({ content }: AboutProps) {
         )}
       </div>
 
-      <div className="about-person" data-content-status={about.person.status}>
+      <div className="about-person">
         <span className="field-rule" aria-hidden="true" />
-        <p>{person}</p>
+        <p className="section-kicker">{about.person.label}</p>
+        <h3>{about.person.name}</h3>
+        <p>{about.person.bio}</p>
       </div>
     </section>
   );

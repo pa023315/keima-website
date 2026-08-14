@@ -9,12 +9,12 @@ type LocaleMetadata = {
 
 const metadataByLocale: Record<Locale, LocaleMetadata> = {
   "zh-TW": {
-    title: "KEIMA／桂馬數位｜品牌資訊待補",
-    description: "KEIMA 桂馬數位企業形象網站，正式品牌文案待提供。",
+    title: "KEIMA／桂馬數位｜跨越既有路徑，連結新的可能。",
+    description: "KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。",
   },
   en: {
-    title: "KEIMA | Brand information pending",
-    description: "KEIMA corporate brand site. Final brand copy is pending.",
+    title: "KEIMA | Cross existing paths, connect new possibilities.",
+    description: "KEIMA is a digital consulting brand built around strategy, creativity, and connections.",
   },
 };
 
@@ -23,7 +23,7 @@ export function createSiteMetadata(locale: Locale): Metadata {
   const isZh = locale === "zh-TW";
 
   return {
-    metadataBase: new URL("https://keima.example"),
+    metadataBase: new URL("https://pa023315.com"),
     ...metadata,
     alternates: {
       canonical: `/${locale}/`,

@@ -18,22 +18,34 @@ describe("siteContent", () => {
     }
   });
 
-  it("marks every unprovided business fact as pending", () => {
+  it("stores the provided KEIMA brand, person, service, and contact facts as ready content", () => {
+    const zh = siteContent["zh-TW"];
+
+    expect(zh.hero.statement).toEqual({
+      status: "ready",
+      value: "跨越既有路徑，連結新的可能。",
+    });
+    expect(zh.about.brand.headline).toBe("跨越既有路徑，連結新的可能。");
+    expect(zh.about.brand.tagline).toBe(
+      "Strategy, creativity, and connections for what comes next.",
+    );
+    expect(zh.about.person.name).toBe("桂馬數位 專案顧問 / 鄭祤呈");
+    expect(zh.contact.email).toEqual({ status: "ready", value: "service@pa023315.com" });
+    expect(zh.services.map((service) => service.url)).toEqual([
+      { status: "ready", value: "https://indie-guider.games/" },
+      { status: "ready", value: "https://jobsgame.tw/" },
+      { status: "ready", value: "https://gamecf.tw/" },
+    ]);
+  });
+
+  it("marks only still-unprovided business facts as pending", () => {
     for (const locale of Object.values(siteContent)) {
-      expect(locale.hero.statement.status).toBe("pending");
-      expect(locale.about.person.status).toBe("pending");
       expect(locale.about.portrait.status).toBe("pending");
-      expect(locale.contact.email.status).toBe("pending");
       expect(locale.footer.social.status).toBe("pending");
       expect(locale.footer.copyright.status).toBe("pending");
       expect(locale.footer.legal.status).toBe("pending");
 
       for (const service of locale.services) {
-        expect(service.status.status).toBe("pending");
-        expect(service.name.status).toBe("pending");
-        expect(service.summary.status).toBe("pending");
-        expect(service.audience.status).toBe("pending");
-        expect(service.url.status).toBe("pending");
         expect(service.image.status).toBe("pending");
       }
     }

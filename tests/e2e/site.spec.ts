@@ -19,10 +19,12 @@ for (const locale of locales) {
   });
 }
 
-test("pending email is presented as text instead of an invalid mail link", async ({ page }) => {
+test("business email is presented as a ready mail link", async ({ page }) => {
   await page.goto("/zh-TW/");
 
-  await expect(page.locator("#contact a[href^='mailto:']")).toHaveCount(0);
+  await expect(page.locator("#contact a[href='mailto:service@pa023315.com']")).toHaveText(
+    "service@pa023315.com",
+  );
 });
 
 test("mobile uses the standalone color symbol", async ({ page }) => {

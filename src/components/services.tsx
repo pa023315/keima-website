@@ -68,52 +68,52 @@ function ServiceItem({
       data-motion-accent="service-card"
     >
       <Reveal className="service-reveal" delay={revealDelay}>
-      <div className="service-heading">
-        <span className="service-index" aria-hidden="true">
-          {service.index}
-        </span>
-        <h3>{name}</h3>
-      </div>
+        <div className="service-heading">
+          <span className="service-index" aria-hidden="true">
+            {service.index}
+          </span>
+          <h3>{name}</h3>
+        </div>
 
-      <div className="service-media">
-        {service.image.status === "ready" ? (
-          <Image
-            className="editorial-image"
-            src={service.image.value}
-            alt={name}
-            width="1200"
-            height="750"
-            unoptimized
-          />
-        ) : (
-          <MediaPlaceholder label={service.image.label} />
-        )}
-      </div>
+        <div className="service-media">
+          {service.image.status === "ready" ? (
+            <Image
+              className="editorial-image"
+              src={service.image.value}
+              alt={name}
+              width="1200"
+              height="750"
+              unoptimized
+            />
+          ) : (
+            <MediaPlaceholder label={service.image.label} />
+          )}
+        </div>
 
-      <dl className="service-details">
-        <div>
-          <dt>{labels.status}</dt>
-          <dd>{contentValue(service.status)}</dd>
-        </div>
-        <div>
-          <dt>{labels.summary}</dt>
-          <dd>{contentValue(service.summary)}</dd>
-        </div>
-        <div>
-          <dt>{labels.audience}</dt>
-          <dd>{contentValue(service.audience)}</dd>
-        </div>
-        <div>
-          <dt>{labels.url}</dt>
-          <dd>
-            {service.url.status === "ready" && serviceHref ? (
-              <a href={serviceHref}>{service.url.value}</a>
-            ) : (
-              contentValue(service.url)
-            )}
-          </dd>
-        </div>
-      </dl>
+        <dl className="service-details">
+          <div>
+            <dt>{labels.status}</dt>
+            <dd>{contentValue(service.status)}</dd>
+          </div>
+          <div>
+            <dt>{labels.summary}</dt>
+            <dd>{contentValue(service.summary)}</dd>
+          </div>
+          <div>
+            <dt>{labels.audience}</dt>
+            <dd>{contentValue(service.audience)}</dd>
+          </div>
+          <div>
+            <dt>{labels.url}</dt>
+            <dd>
+              {service.url.status === "ready" && serviceHref ? (
+                <a href={serviceHref}>{service.url.value}</a>
+              ) : (
+                contentValue(service.url)
+              )}
+            </dd>
+          </div>
+        </dl>
       </Reveal>
     </li>
   );
@@ -124,17 +124,12 @@ export function Services({ content }: ServicesProps) {
     <section
       id="services"
       className="content-section section-grid services"
-      aria-labelledby="services-title"
+      aria-label={content.servicesLabel}
     >
       <div className="services-intro">
         <p className="section-index" aria-hidden="true">
           <span>03</span>
         </p>
-        <Reveal>
-          <h2 id="services-title" className="section-title">
-            {content.servicesLabel}
-          </h2>
-        </Reveal>
       </div>
 
       <ol className="services-list">

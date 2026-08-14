@@ -51,10 +51,10 @@ describe("Hero", () => {
   it("marks the first viewport elements for a layered entrance sequence", () => {
     render(<Hero content={zhContent} />);
 
-    const hero = screen.getByRole("region", { name: "品牌定位文案待提供" });
+    const hero = screen.getByRole("region", { name: "跨越既有路徑，連結新的可能。" });
     expect(hero).toHaveAttribute("data-motion-intensity", "enhanced");
     expect(screen.getByText(/KEIMA/).closest(".hero-reveal")).toHaveClass("hero-reveal--eyebrow");
-    expect(screen.getByRole("heading", { name: "品牌定位文案待提供" })).toHaveClass(
+    expect(screen.getByRole("heading", { name: "跨越既有路徑，連結新的可能。" })).toHaveClass(
       "hero-reveal",
       "hero-reveal--title",
     );
@@ -66,29 +66,44 @@ describe("Hero", () => {
 });
 
 describe("About", () => {
-  it("shows the current pending profile and portrait labels", () => {
+  it("shows KEIMA brand information and person information without the old profile heading", () => {
     render(<About content={zhContent} />);
 
-    expect(screen.getByText("人物資料待提供")).toBeVisible();
+    expect(screen.queryByText("人物介紹")).not.toBeInTheDocument();
+    expect(screen.getByText("桂馬資訊")).toBeVisible();
+    expect(screen.getByRole("heading", { name: "跨越既有路徑，連結新的可能。" })).toBeVisible();
+    expect(
+      screen.getByText("Strategy, creativity, and connections for what comes next."),
+    ).toBeVisible();
+    expect(
+      screen.getByText("KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。"),
+    ).toBeVisible();
+    expect(screen.getByText("人物資訊")).toBeVisible();
+    expect(screen.getByRole("heading", { name: "桂馬數位 專案顧問 / 鄭祤呈" })).toBeVisible();
+    expect(screen.getByText(/具10年活動企劃、8年群眾募資顧問經驗/)).toBeVisible();
     expect(screen.getByRole("img", { name: "人物照片待提供" })).toBeVisible();
   });
 });
 
 describe("Services", () => {
-  it("renders exactly three complete pending service entries without fake links", () => {
+  it("renders the three sourced operating brands without a visible section title", () => {
     render(<Services content={zhContent} />);
 
-    const section = screen.getByRole("region", { name: "運作中服務" });
+    expect(screen.queryByText("運作中服務")).not.toBeInTheDocument();
+    const section = screen.getByRole("region", { name: "營運品牌" });
     const services = within(section).getAllByRole("listitem");
 
     expect(services).toHaveLength(3);
-    expect(within(section).getAllByText("服務名稱待提供")).toHaveLength(3);
-    expect(within(section).getAllByText("目前狀態待提供")).toHaveLength(3);
-    expect(within(section).getAllByText("服務簡介待提供")).toHaveLength(3);
-    expect(within(section).getAllByText("目標客群待提供")).toHaveLength(3);
-    expect(within(section).getAllByText("服務網址待提供")).toHaveLength(3);
+    expect(within(section).getByRole("heading", { name: "INDIE-GUIDER" })).toBeVisible();
+    expect(within(section).getByRole("heading", { name: "Jobsgame" })).toBeVisible();
+    expect(within(section).getByRole("heading", { name: "GameCF" })).toBeVisible();
+    expect(
+      within(section).getByRole("link", { name: "https://indie-guider.games/" }),
+    ).toHaveAttribute("href", "https://indie-guider.games/");
+    expect(within(section).getByText("獨立遊戲資訊站")).toBeVisible();
+    expect(within(section).getByText("台灣遊戲產業職缺與外包資訊平台")).toBeVisible();
+    expect(within(section).getByText("數位遊戲群眾募資資訊站")).toBeVisible();
     expect(within(section).getAllByRole("img", { name: "服務圖片待提供" })).toHaveLength(3);
-    expect(within(section).queryByRole("link")).not.toBeInTheDocument();
     expect(section.querySelectorAll(".service-reveal")).toHaveLength(3);
     expect(section.querySelectorAll(".service-item[data-motion-accent='service-card']")).toHaveLength(3);
   });
@@ -162,9 +177,10 @@ describe("Contact", () => {
       "data-motion-accent",
       "contact-finale",
     );
-    expect(screen.getByText("商務 Email 待提供")).toBeVisible();
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    expect(document.querySelector('a[href^="mailto:"]')).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "service@pa023315.com" })).toHaveAttribute(
+      "href",
+      "mailto:service@pa023315.com",
+    );
   });
 
   it("links a business email only when it is ready", () => {

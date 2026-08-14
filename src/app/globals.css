@@ -184,7 +184,7 @@ a {
   align-items: start;
   min-height: 100svh;
   padding: clamp(9rem, 15vh, 12rem) var(--page-margin) clamp(3rem, 7vh, 5rem);
-  overflow: clip;
+  overflow: hidden;
   isolation: isolate;
 }
 
@@ -292,6 +292,20 @@ a {
   }
 }
 
+@keyframes hero-cut-enter-contained {
+  from {
+    clip-path: polygon(50% 0, 100% 0, 100% 100%, 0 100%, 50% 60%);
+    opacity: 0;
+    transform: skewX(-4deg);
+  }
+
+  to {
+    clip-path: var(--hero-cut-shape);
+    opacity: 1;
+    transform: skewX(0);
+  }
+}
+
 .hero-reveal {
   animation: hero-enter 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -366,9 +380,43 @@ a {
   grid-row: 1;
 }
 
-.about-heading {
+.about-brand {
   grid-column: 3 / 8;
   grid-row: 1;
+}
+
+.about-brand-title {
+  max-width: 8ch;
+}
+
+.about-tagline {
+  max-width: 30rem;
+  margin: 1.6rem 0 0;
+  color: var(--accent-hover);
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  font-style: italic;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.about-copy {
+  max-width: 44rem;
+  margin-top: clamp(2rem, 4vw, 4rem);
+}
+
+.about-copy p {
+  margin: 1.2rem 0 0;
+  color: var(--text-primary);
+  font-size: clamp(1.05rem, 1.35vw, 1.35rem);
+  line-height: 1.75;
+}
+
+.about-copy .lead {
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
 }
 
 .about-portrait {
@@ -384,7 +432,16 @@ a {
   padding-bottom: clamp(1rem, 4vw, 4.5rem);
 }
 
-.about-person p {
+.about-person h3 {
+  max-width: 14ch;
+  margin: 1.1rem 0 0;
+  font-size: clamp(1.8rem, 3vw, 3.8rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.about-person p:not(.section-kicker) {
   max-width: 22ch;
   margin: 1.4rem 0 0;
   font-size: clamp(1.35rem, 2.2vw, 2.4rem);
@@ -966,10 +1023,14 @@ a {
 
   .hero-cut {
     top: 45%;
-    right: -24%;
-    width: 78%;
+    right: 0;
+    width: 58%;
     height: 46%;
     --hero-cut-shape: polygon(30% 0, 100% 0, 100% 100%, 0 100%, 20% 55%);
+  }
+
+  .hero[data-motion-intensity="enhanced"] .hero-cut {
+    animation-name: hero-cut-enter-contained;
   }
 
   .hero-cut::after {
@@ -991,15 +1052,33 @@ a {
   }
 
   .about-index,
-  .about-heading,
+  .about-brand,
   .about-portrait,
   .about-person {
     grid-column: 1 / -1;
     grid-row: auto;
   }
 
-  .about-heading {
+  .about-brand {
     margin: 1rem 0 0 calc((100% + 0.75rem) / 4);
+  }
+
+  .about-brand-title {
+    max-width: 7ch;
+  }
+
+  [data-locale="en"] .about-brand {
+    margin-left: 0;
+  }
+
+  [data-locale="en"] .about-brand-title {
+    max-width: 100%;
+    font-size: clamp(2.75rem, 12vw, 4rem);
+    overflow-wrap: break-word;
+  }
+
+  .about-copy {
+    margin-top: 2rem;
   }
 
   .about-portrait {
@@ -1010,7 +1089,12 @@ a {
     padding: 0 0 0 calc((100% + 0.75rem) / 4);
   }
 
-  .about-person p {
+  .about-person h3 {
+    max-width: 12ch;
+    font-size: clamp(2.3rem, 10vw, 3.6rem);
+  }
+
+  .about-person p:not(.section-kicker) {
     max-width: 18ch;
     font-size: clamp(1.5rem, 7vw, 2rem);
   }
@@ -1070,9 +1154,9 @@ a {
   }
 
   .contact-marker {
-    right: -6%;
+    right: 0;
     bottom: 12%;
-    width: 52%;
+    width: 42%;
   }
 
   .section-wipe-content {

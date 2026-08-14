@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { locales } from "@/lib/locales";
 
-const siteBaseUrl = "https://keima.example";
+const siteBaseUrl = "https://pa023315.com";
 
 export const dynamic = "force-static";
 
