@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { HeroMotion } from "@/components/motion/hero-motion";
 import type { LocaleContent } from "@/content/site-content";
 
@@ -19,9 +21,19 @@ export function Hero({ content }: HeroProps) {
       data-motion-intensity="enhanced"
     >
       <div className="hero-cut" aria-hidden="true" />
-      <p className="hero-eyebrow hero-reveal hero-reveal--eyebrow">{content.hero.eyebrow}</p>
       <HeroMotion>
-        <h1 id="hero-title" className="hero-title hero-reveal hero-reveal--title">
+        <div className="hero-logo-display hero-reveal hero-reveal--logo">
+          <Image
+            className="hero-logo"
+            src="/brand/keima-lockup-color.svg"
+            alt="KEIMA 桂馬數位"
+            width="580"
+            height="116"
+            priority
+            unoptimized
+          />
+        </div>
+        <h1 id="hero-title" className="hero-subtitle hero-reveal hero-reveal--subtitle">
           {statement}
         </h1>
       </HeroMotion>

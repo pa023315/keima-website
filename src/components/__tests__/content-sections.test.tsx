@@ -48,15 +48,18 @@ function renderReadyServiceUrl(value: string) {
 }
 
 describe("Hero", () => {
-  it("marks the first viewport elements for a layered entrance sequence", () => {
+  it("uses the official logo as the hero display and keeps the statement as a subtitle", () => {
     render(<Hero content={zhContent} />);
 
     const hero = screen.getByRole("region", { name: "跨越既有路徑，連結新的可能。" });
     expect(hero).toHaveAttribute("data-motion-intensity", "enhanced");
-    expect(screen.getByText(/KEIMA/).closest(".hero-reveal")).toHaveClass("hero-reveal--eyebrow");
-    expect(screen.getByRole("heading", { name: "跨越既有路徑，連結新的可能。" })).toHaveClass(
+    expect(within(hero).queryByText("KEIMA／桂馬數位")).not.toBeInTheDocument();
+    expect(within(hero).getByRole("img", { name: "KEIMA 桂馬數位" })).toHaveClass(
+      "hero-logo",
+    );
+    expect(within(hero).getByRole("heading", { name: "跨越既有路徑，連結新的可能。" })).toHaveClass(
       "hero-reveal",
-      "hero-reveal--title",
+      "hero-subtitle",
     );
     expect(screen.getByRole("link", { name: /向下探索/ })).toHaveClass(
       "hero-reveal",
