@@ -12,15 +12,20 @@ export function Hero({ content }: HeroProps) {
       : content.hero.statement.label;
 
   return (
-    <section id="home" className="hero" aria-labelledby="hero-title">
+    <section
+      id="home"
+      className="hero"
+      aria-labelledby="hero-title"
+      data-motion-intensity="enhanced"
+    >
       <div className="hero-cut" aria-hidden="true" />
-      <p className="hero-eyebrow">{content.hero.eyebrow}</p>
+      <p className="hero-eyebrow hero-reveal hero-reveal--eyebrow">{content.hero.eyebrow}</p>
       <HeroMotion>
-        <h1 id="hero-title" className="hero-title">
+        <h1 id="hero-title" className="hero-title hero-reveal hero-reveal--title">
           {statement}
         </h1>
       </HeroMotion>
-      <a className="hero-scroll" href="#about">
+      <a className="hero-scroll hero-reveal hero-reveal--scroll" href="#about">
         <span aria-hidden="true">01—</span>
         {content.hero.scroll}
       </a>

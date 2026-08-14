@@ -11,9 +11,14 @@ type RevealProps = {
   delay?: number;
 };
 
-const revealEase = [0.22, 1, 0.36, 1] as const;
-const hiddenState = { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" };
-const revealedState = { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" };
+const revealEase = [0.16, 1, 0.3, 1] as const;
+const hiddenState = {
+  opacity: 0,
+  y: 56,
+  clipPath: "inset(0 0 112% 0)",
+  filter: "blur(10px)",
+};
+const revealedState = { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)", filter: "blur(0px)" };
 
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const target = useRef<HTMLDivElement>(null);
@@ -55,7 +60,7 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
         animate={revealState}
         initial={false}
         viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.8, delay, ease: revealEase }}
+        transition={{ duration: 0.95, delay, ease: revealEase }}
       >
         {children}
       </motion.div>

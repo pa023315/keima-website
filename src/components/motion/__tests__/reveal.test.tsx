@@ -108,7 +108,7 @@ describe("Reveal", () => {
     expect(motionState.calls.at(-1)?.style).toBeUndefined();
   });
 
-  it("arms offscreen, then reveals once with controlled displacement, duration, and easing", () => {
+  it("arms offscreen, then reveals once with enhanced displacement, blur, duration, and easing", () => {
     render(
       <Reveal delay={0.12}>
         <span>Animated content</span>
@@ -121,7 +121,7 @@ describe("Reveal", () => {
         animate: undefined,
         whileInView: undefined,
         viewport: { once: true, amount: 0.25 },
-        transition: { duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.95, delay: 0.12, ease: [0.16, 1, 0.3, 1] },
       }),
     );
 
@@ -130,7 +130,7 @@ describe("Reveal", () => {
     );
     expect(motionState.calls.at(-1)).toEqual(
       expect.objectContaining({
-        animate: { opacity: 0, y: 32, clipPath: "inset(0 0 100% 0)" },
+        animate: { opacity: 0, y: 56, clipPath: "inset(0 0 112% 0)", filter: "blur(10px)" },
         whileInView: undefined,
       }),
     );
@@ -142,6 +142,7 @@ describe("Reveal", () => {
       opacity: 1,
       y: 0,
       clipPath: "inset(0 0 0% 0)",
+      filter: "blur(0px)",
     });
   });
 
@@ -189,8 +190,24 @@ describe("Reveal", () => {
       opacity: 1,
       y: 0,
       clipPath: "inset(0 0 0% 0)",
+      filter: "blur(0px)",
     });
     vi.useRealTimers();
+  });
+});
+
+describe("HeroMotion", () => {
+  it("adds a visible parallax drift in normal motion mode", () => {
+    render(
+      <HeroMotion>
+        <h1>Animated hero</h1>
+      </HeroMotion>,
+    );
+
+    expect(motionState.transformCalls.at(-1)).toEqual({
+      input: [0, 1],
+      output: [0, 72],
+    });
   });
 });
 

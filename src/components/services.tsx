@@ -45,7 +45,15 @@ function safeServiceHref(value: string) {
   }
 }
 
-function ServiceItem({ service, locale }: { service: ServiceContent; locale: LocaleContent["locale"] }) {
+function ServiceItem({
+  service,
+  locale,
+  revealDelay,
+}: {
+  service: ServiceContent;
+  locale: LocaleContent["locale"];
+  revealDelay: number;
+}) {
   const labels =
     locale === "zh-TW"
       ? { status: "狀態", summary: "簡介", audience: "對象", url: "網址" }
@@ -54,7 +62,12 @@ function ServiceItem({ service, locale }: { service: ServiceContent; locale: Loc
   const serviceHref = service.url.status === "ready" ? safeServiceHref(service.url.value) : null;
 
   return (
-    <li className="service-item" data-content-status={service.status.status}>
+    <li
+      className="service-item"
+      data-content-status={service.status.status}
+      data-motion-accent="service-card"
+    >
+      <Reveal className="service-reveal" delay={revealDelay}>
       <div className="service-heading">
         <span className="service-index" aria-hidden="true">
           {service.index}
@@ -101,6 +114,7 @@ function ServiceItem({ service, locale }: { service: ServiceContent; locale: Loc
           </dd>
         </div>
       </dl>
+      </Reveal>
     </li>
   );
 }
@@ -124,8 +138,13 @@ export function Services({ content }: ServicesProps) {
       </div>
 
       <ol className="services-list">
-        {content.services.map((service) => (
-          <ServiceItem key={service.id} service={service} locale={content.locale} />
+        {content.services.map((service, index) => (
+          <ServiceItem
+            key={service.id}
+            service={service}
+            locale={content.locale}
+            revealDelay={index * 0.08}
+          />
         ))}
       </ol>
     </section>

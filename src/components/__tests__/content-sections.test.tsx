@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
+import { Hero } from "@/components/hero";
 import { Services } from "@/components/services";
 import { siteContent, type LocaleContent } from "@/content/site-content";
 
@@ -46,6 +47,24 @@ function renderReadyServiceUrl(value: string) {
   render(<Services content={content} />);
 }
 
+describe("Hero", () => {
+  it("marks the first viewport elements for a layered entrance sequence", () => {
+    render(<Hero content={zhContent} />);
+
+    const hero = screen.getByRole("region", { name: "品牌定位文案待提供" });
+    expect(hero).toHaveAttribute("data-motion-intensity", "enhanced");
+    expect(screen.getByText(/KEIMA/).closest(".hero-reveal")).toHaveClass("hero-reveal--eyebrow");
+    expect(screen.getByRole("heading", { name: "品牌定位文案待提供" })).toHaveClass(
+      "hero-reveal",
+      "hero-reveal--title",
+    );
+    expect(screen.getByRole("link", { name: /向下探索/ })).toHaveClass(
+      "hero-reveal",
+      "hero-reveal--scroll",
+    );
+  });
+});
+
 describe("About", () => {
   it("shows the current pending profile and portrait labels", () => {
     render(<About content={zhContent} />);
@@ -70,6 +89,8 @@ describe("Services", () => {
     expect(within(section).getAllByText("服務網址待提供")).toHaveLength(3);
     expect(within(section).getAllByRole("img", { name: "服務圖片待提供" })).toHaveLength(3);
     expect(within(section).queryByRole("link")).not.toBeInTheDocument();
+    expect(section.querySelectorAll(".service-reveal")).toHaveLength(3);
+    expect(section.querySelectorAll(".service-item[data-motion-accent='service-card']")).toHaveLength(3);
   });
 
   it("uses real links and images only when service content is ready", () => {
@@ -137,6 +158,10 @@ describe("Contact", () => {
   it("shows a pending business email as text rather than a mail link", () => {
     render(<Contact content={zhContent} />);
 
+    expect(screen.getByRole("region", { name: "商務聯繫" })).toHaveAttribute(
+      "data-motion-accent",
+      "contact-finale",
+    );
     expect(screen.getByText("商務 Email 待提供")).toBeVisible();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(document.querySelector('a[href^="mailto:"]')).not.toBeInTheDocument();

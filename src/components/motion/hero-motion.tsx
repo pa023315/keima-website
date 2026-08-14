@@ -16,7 +16,7 @@ export function HeroMotion({ children }: HeroMotionProps) {
     target,
     offset: ["start start", "end start"],
   });
-  const animatedY = useTransform(scrollYProgress, [0, 1], [0, 48]);
+  const animatedY = useTransform(scrollYProgress, [0, 1], [0, 72]);
 
   return (
     <motion.div

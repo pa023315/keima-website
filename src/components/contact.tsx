@@ -15,6 +15,7 @@ export function Contact({ content }: ContactProps) {
         id="contact"
         className="content-section section-grid contact"
         aria-labelledby="contact-title"
+        data-motion-accent="contact-finale"
       >
         <p className="section-index contact-index" aria-hidden="true">
           <span>04</span>
