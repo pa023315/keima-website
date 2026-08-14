@@ -79,7 +79,7 @@ describe("Services", () => {
         {
           ...zhContent.services[0],
           name: { status: "ready", value: "Ready service" },
-          url: { status: "ready", value: "https://example.com/service" },
+          url: { status: "ready", value: "https://service.keima.test/service" },
           image: { status: "ready", value: "/ready-service.jpg" },
         },
       ],
@@ -87,13 +87,12 @@ describe("Services", () => {
 
     render(<Services content={readyContent} />);
 
-    expect(screen.getByRole("link", { name: "https://example.com/service" })).toHaveAttribute(
-      "href",
-      "https://example.com/service",
-    );
-    expect(screen.getByRole("link", { name: "https://example.com/service" })).not.toHaveAttribute(
-      "target",
-    );
+    expect(
+      screen.getByRole("link", { name: "https://service.keima.test/service" }),
+    ).toHaveAttribute("href", "https://service.keima.test/service");
+    expect(
+      screen.getByRole("link", { name: "https://service.keima.test/service" }),
+    ).not.toHaveAttribute("target");
     expect(screen.getByRole("img", { name: "Ready service" })).toHaveAttribute(
       "src",
       "/ready-service.jpg",
@@ -109,7 +108,7 @@ describe("Services", () => {
     "/path\nnext",
     "/%0aevil.example/path",
     "javascript:alert(1)",
-    "http://example.com/path",
+    "http://unsafe.keima.test/path",
   ])("does not make unsafe ready service URL %j clickable", (unsafeUrl) => {
     renderReadyServiceUrl(unsafeUrl);
 
@@ -146,14 +145,14 @@ describe("Contact", () => {
   it("links a business email only when it is ready", () => {
     const readyContent: LocaleContent = {
       ...zhContent,
-      contact: { ...zhContent.contact, email: { status: "ready", value: "hello@example.com" } },
+      contact: { ...zhContent.contact, email: { status: "ready", value: "hello@keima.test" } },
     };
 
     render(<Contact content={readyContent} />);
 
-    expect(screen.getByRole("link", { name: "hello@example.com" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "hello@keima.test" })).toHaveAttribute(
       "href",
-      "mailto:hello@example.com",
+      "mailto:hello@keima.test",
     );
   });
 });

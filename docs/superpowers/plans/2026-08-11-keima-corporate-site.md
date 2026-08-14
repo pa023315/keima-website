@@ -1580,7 +1580,7 @@ git commit -m "test: add metadata and responsive browser QA"
 **Files:**
 - Modify only files identified by verification failures.
 
-- [ ] **Step 1: Run the complete automated suite**
+- [x] **Step 1: Run the complete automated suite**
 
 Run each command separately:
 
@@ -1592,9 +1592,9 @@ npm run build
 npm run test:e2e
 ```
 
-Expected: every command exits successfully; `out/zh-TW/index.html` and `out/en/index.html` exist.
+Observed: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, and `npm run test:e2e` exited successfully. `out/zh-TW/index.html`, `out/en/index.html`, `out/robots.txt`, and `out/sitemap.xml` exist.
 
-- [ ] **Step 2: Inspect the static output and source for forbidden content**
+- [x] **Step 2: Inspect the static output and source for forbidden content**
 
 Run:
 
@@ -1602,13 +1602,15 @@ Run:
 rg -n "Lorem ipsum|example.com|mailto:.*pending|#000000|linear-gradient|radial-gradient" src public out
 ```
 
-Expected: no Lorem Ipsum, clickable pending Email, raw black replacement, or visual gradient appears. `keima.example` may appear only in intentionally non-indexable local metadata and must be reported as a production-domain input still required before deployment.
+Observed: initial scan found `example.com` only in test fixtures. Fixtures were changed to `.test` domains/emails, and the scan now has no matches. `keima.example` remains intentional in non-indexable local metadata, robots, and sitemap until a production domain is provided.
 
-- [ ] **Step 3: Perform focused visual QA**
+- [x] **Step 3: Perform focused visual QA**
 
 Open the production output and inspect both languages at 1440px and 390px. Confirm official Logo proportions, clear space, large-title clipping, Service sticky behavior, Mobile stacking, Contact transition, visible keyboard focus, and reduced-motion behavior. Fix only observed defects, then rerun the complete automated suite.
 
-- [ ] **Step 4: Record the remaining content inputs in the handoff**
+Observed: focused browser QA passed for zh-TW/en at 1440px and 390px, including logo source/proportions/clear space, large-title horizontal fit, desktop Services sticky behavior, mobile Services stacking, Contact visibility, keyboard focus, and reduced-motion markers.
+
+- [x] **Step 4: Record the remaining content inputs in the handoff**
 
 Report these intentional content requirements without inventing values:
 
@@ -1622,7 +1624,7 @@ Company, copyright, and legal information
 Production domain and final social-preview content
 ```
 
-- [ ] **Step 5: Commit verification fixes if any source files changed**
+- [x] **Step 5: Commit verification fixes if any source files changed**
 
 ```bash
 git add src tests public package.json package-lock.json
