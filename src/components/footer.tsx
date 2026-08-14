@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-import type { ContentState, LocaleContent } from "@/content/site-content";
+import type { ContentState, LocaleContent, NavSectionId } from "@/content/site-content";
 
 type FooterProps = {
   content: LocaleContent;
 };
 
-const footerSections = ["home", "about", "services", "contact"] as const;
+const footerSections = ["home", "about", "approach", "in-motion", "profile", "contact"] as const satisfies readonly NavSectionId[];
 
 function contentValue(state: ContentState<string>) {
   return state.status === "ready" ? state.value : state.label;

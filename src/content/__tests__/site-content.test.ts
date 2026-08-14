@@ -6,48 +6,75 @@ describe("siteContent", () => {
     expect(Object.keys(siteContent).sort()).toEqual(["en", "zh-TW"]);
   });
 
-  it("provides the three approved service slots in each locale", () => {
+  it("provides the approved approach and in-motion structures in each locale", () => {
     for (const locale of Object.values(siteContent)) {
-      expect(locale.services).toHaveLength(3);
-      expect(locale.services.map((service) => service.id)).toEqual([
-        "service-01",
-        "service-02",
-        "service-03",
+      expect(locale.approach.items).toHaveLength(4);
+      expect(locale.approach.items.map((item) => item.id)).toEqual([
+        "strategy",
+        "projects",
+        "connections",
+        "digital",
       ]);
-      expect(locale.services.map((service) => service.index)).toEqual(["01", "02", "03"]);
+      expect(locale.inMotion.projects).toHaveLength(4);
+      expect(locale.inMotion.projects.map((project) => project.id)).toEqual([
+        "jobsgame",
+        "indie-guider",
+        "creator-erp",
+        "consulting",
+      ]);
+      expect(locale.inMotion.projects.map((project) => project.index)).toEqual([
+        "01",
+        "02",
+        "03",
+        "04",
+      ]);
     }
   });
 
-  it("stores the provided KEIMA brand, person, service, and contact facts as ready content", () => {
+  it("stores the provided KEIMA brand, profile, project, and contact facts as ready content", () => {
     const zh = siteContent["zh-TW"];
 
     expect(zh.hero.statement).toEqual({
       status: "ready",
       value: "跨越既有路徑，連結新的可能。",
     });
-    expect(zh.about.brand.headline).toBe("跨越既有路徑，連結新的可能。");
-    expect(zh.about.brand.tagline).toBe(
-      "Strategy, creativity, and connections for what comes next.",
-    );
-    expect(zh.about.person.name).toBe("桂馬數位 專案顧問 / 鄭祤呈");
+    expect(zh.hero.supporting).toBe("Beyond the expected path.");
+    expect(zh.nav).toEqual({
+      home: "首頁",
+      about: "About",
+      approach: "Approach",
+      "in-motion": "In Motion",
+      profile: "Profile",
+      contact: "聯繫",
+    });
+    expect(zh.about.display).toBe("WE CONNECT\nIDEAS,\nPEOPLE\nAND\nPOSSIBILITIES.");
+    expect(zh.profile.name).toBe("IAN / 祤呈");
+    expect(zh.profile.role).toBe("Consultant / Project Director");
     expect(zh.contact.email).toEqual({ status: "ready", value: "service@pa023315.com" });
-    expect(zh.services.map((service) => service.url)).toEqual([
-      { status: "ready", value: "https://indie-guider.games/" },
+    expect(zh.inMotion.projects.map((project) => project.url)).toEqual([
       { status: "ready", value: "https://jobsgame.tw/" },
-      { status: "ready", value: "https://gamecf.tw/" },
+      { status: "ready", value: "https://indie-guider.games/" },
+      { status: "pending", label: "連結待提供" },
+      { status: "pending", label: "連結待提供" },
     ]);
+  });
+
+  it("keeps unprovided project links pending instead of inventing URLs", () => {
+    const zh = siteContent["zh-TW"];
+
+    expect(zh.inMotion.projects.find((project) => project.id === "creator-erp")?.url).toEqual(
+      { status: "pending", label: "連結待提供" },
+    );
+    expect(zh.inMotion.projects.find((project) => project.id === "consulting")?.url).toEqual(
+      { status: "pending", label: "連結待提供" },
+    );
   });
 
   it("marks only still-unprovided business facts as pending", () => {
     for (const locale of Object.values(siteContent)) {
-      expect(locale.about.portrait.status).toBe("pending");
       expect(locale.footer.social.status).toBe("pending");
       expect(locale.footer.copyright.status).toBe("pending");
       expect(locale.footer.legal.status).toBe("pending");
-
-      for (const service of locale.services) {
-        expect(service.image.status).toBe("pending");
-      }
     }
   });
 

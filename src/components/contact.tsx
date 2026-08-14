@@ -18,14 +18,23 @@ export function Contact({ content }: ContactProps) {
         data-motion-accent="contact-finale"
       >
         <p className="section-index contact-index" aria-hidden="true">
-          <span>04</span>
+          <span>06</span>
         </p>
-        <h2 id="contact-title" className="contact-label">
-          {contact.label}
+        <p className="contact-label">{contact.label}</p>
+        <h2 id="contact-title" className="contact-title">
+          {contact.title}
         </h2>
-        <h3 className="contact-email" data-content-status={contact.email.status}>
-          {contact.email.status === "ready" ? <a href={`mailto:${email}`}>{email}</a> : email}
-        </h3>
+        <p className="contact-body">{contact.body}</p>
+        <p className="contact-email" data-content-status={contact.email.status}>
+          {contact.email.status === "ready" ? (
+            <a href={`mailto:${email}`} aria-label={`${contact.cta} ${email}`}>
+              {contact.cta}
+              <span>{email}</span>
+            </a>
+          ) : (
+            email
+          )}
+        </p>
         <span className="contact-marker" aria-hidden="true" />
       </section>
     </SectionWipe>

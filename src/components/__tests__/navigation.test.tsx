@@ -29,7 +29,9 @@ function renderNavigation(content: LocaleContent = siteContent["zh-TW"]) {
       <Navigation content={content} />
       <section id="home" />
       <section id="about" />
-      <section id="services" />
+      <section id="approach" />
+      <section id="in-motion" />
+      <section id="profile" />
       <section id="contact" />
     </>,
   );
@@ -78,8 +80,10 @@ describe("Navigation", () => {
     const primaryNavigation = screen.getByRole("navigation", { name: "主要導覽" });
     const expectedLinks = [
       ["首頁", "#home"],
-      ["介紹", "#about"],
-      ["服務", "#services"],
+      ["About", "#about"],
+      ["Approach", "#approach"],
+      ["In Motion", "#in-motion"],
+      ["Profile", "#profile"],
       ["聯繫", "#contact"],
     ] as const;
 
@@ -95,26 +99,26 @@ describe("Navigation", () => {
     const { unmount } = renderNavigation();
     const observer = observerInstances[0];
 
-    expect(observer.observe).toHaveBeenCalledTimes(4);
+    expect(observer.observe).toHaveBeenCalledTimes(6);
     expect(screen.getByRole("link", { name: "EN" })).toHaveAttribute("href", "/en/#home");
 
     act(() => {
       observer.callback(
         [
           intersectionEntry(document.getElementById("about")!, 0.2),
-          intersectionEntry(document.getElementById("services")!, 0.8),
+          intersectionEntry(document.getElementById("in-motion")!, 0.8),
         ],
         observer,
       );
     });
 
-    expect(screen.getByRole("link", { name: "服務" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "In Motion" })).toHaveAttribute(
       "aria-current",
       "location",
     );
     expect(screen.getByRole("link", { name: "EN" })).toHaveAttribute(
       "href",
-      "/en/#services",
+      "/en/#in-motion",
     );
 
     unmount();

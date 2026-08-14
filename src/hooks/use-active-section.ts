@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export const sectionIds = ["home", "about", "services", "contact"] as const;
+export const sectionIds = ["home", "about", "approach", "in-motion", "profile", "contact"] as const;
 
 export type SectionId = (typeof sectionIds)[number];
 

@@ -35,6 +35,8 @@ export function Hero({ content }: HeroProps) {
           <h1 id="hero-title" className="hero-subtitle hero-reveal hero-reveal--subtitle">
             {statement}
           </h1>
+          <p className="hero-supporting">{content.hero.supporting}</p>
+          <p className="hero-disciplines">{content.hero.disciplines}</p>
         </div>
       </HeroMotion>
     </section>

@@ -12,9 +12,11 @@ for (const locale of locales) {
     await page.goto(`/${locale}/`);
 
     await expect(page.locator("header img")).toBeVisible();
-    for (const id of ["home", "about", "services", "contact"]) {
+    for (const id of ["home", "about", "approach", "in-motion", "philosophy", "profile", "contact"]) {
       await expect(page.locator(`#${id}`)).toBeVisible();
     }
+    await expect(page.getByRole("heading", { name: "HOW WE MOVE" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "CURRENTLY IN MOTION" })).toBeVisible();
     expect(errors).toEqual([]);
   });
 }
@@ -22,7 +24,7 @@ for (const locale of locales) {
 test("business email is presented as a ready mail link", async ({ page }) => {
   await page.goto("/zh-TW/");
 
-  await expect(page.locator("#contact a[href='mailto:service@pa023315.com']")).toHaveText(
+  await expect(page.locator("#contact a[href='mailto:service@pa023315.com']")).toContainText(
     "service@pa023315.com",
   );
 });
@@ -55,7 +57,7 @@ test("desktop hero cut aligns with the hero top and bottom edges", async ({ page
 test("language switching persists the selected locale and current section", async ({ page }) => {
   await page.goto("/zh-TW/#home");
 
-  await page.getByRole("link", { name: "EN" }).click();
+  await page.getByRole("link", { name: "EN", exact: true }).click();
 
   await expect(page).toHaveURL(/\/en\/#home$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
@@ -65,9 +67,9 @@ test("language switching persists the selected locale and current section", asyn
 test("section navigation exposes the active location", async ({ page }) => {
   await page.goto("/zh-TW/");
 
-  await page.locator("#services").scrollIntoViewIfNeeded();
+  await page.locator("#in-motion").scrollIntoViewIfNeeded();
 
-  await expect(page.locator("header nav a[href='#services']")).toHaveAttribute(
+  await expect(page.locator("header nav a[href='#in-motion']")).toHaveAttribute(
     "aria-current",
     "location",
   );

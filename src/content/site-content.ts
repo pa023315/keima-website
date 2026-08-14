@@ -4,48 +4,70 @@ export type ContentState<T> =
 
 export type ContentLocale = "zh-TW" | "en";
 
-export type ServiceContent = {
+export type NavSectionId = "home" | "about" | "approach" | "in-motion" | "profile" | "contact";
+
+export type ApproachItem = {
   id: string;
   index: string;
-  status: ContentState<string>;
-  name: ContentState<string>;
-  summary: ContentState<string>;
-  audience: ContentState<string>;
+  title: string;
+  label: string;
+  description: string;
+};
+
+export type ProjectContent = {
+  id: string;
+  index: string;
+  title: string;
+  label: string;
+  description: string;
   url: ContentState<string>;
-  image: ContentState<string>;
 };
 
 export type LocaleContent<L extends ContentLocale = ContentLocale> = {
   locale: L;
-  nav: {
-    home: string;
-    about: string;
-    services: string;
-    contact: string;
-  };
+  nav: Record<NavSectionId, string>;
   hero: {
-    eyebrow: string;
     statement: ContentState<string>;
-    scroll: string;
+    supporting: string;
+    disciplines: string;
   };
   about: {
-    brand: {
-      label: string;
-      headline: string;
-      tagline: string;
-      intro: string[];
-    };
-    person: {
-      label: string;
-      name: string;
-      bio: string;
-    };
-    portrait: ContentState<string>;
+    eyebrow: string;
+    title: string;
+    display: string;
+    intro: string;
+    belief: string;
   };
-  servicesLabel: string;
-  services: ServiceContent[];
+  approach: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    items: ApproachItem[];
+  };
+  inMotion: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    projects: ProjectContent[];
+  };
+  philosophy: {
+    label: string;
+    display: string;
+    body: string;
+  };
+  profile: {
+    label: string;
+    title: string;
+    name: string;
+    role: string;
+    fields: string[];
+    bio: string[];
+  };
   contact: {
     label: string;
+    title: string;
+    body: string;
+    cta: string;
     email: ContentState<string>;
   };
   footer: {
@@ -61,65 +83,124 @@ const ready = (value: string): ContentState<string> => ({ status: "ready", value
 export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
   "zh-TW": {
     locale: "zh-TW",
-    nav: { home: "首頁", about: "介紹", services: "服務", contact: "聯繫" },
+    nav: {
+      home: "首頁",
+      about: "About",
+      approach: "Approach",
+      "in-motion": "In Motion",
+      profile: "Profile",
+      contact: "聯繫",
+    },
     hero: {
-      eyebrow: "KEIMA／桂馬數位",
       statement: ready("跨越既有路徑，連結新的可能。"),
-      scroll: "向下探索",
+      supporting: "Beyond the expected path.",
+      disciplines: "STRATEGY / PROJECTS / CONNECTIONS / DIGITAL",
     },
     about: {
-      brand: {
-        label: "桂馬資訊",
-        headline: "跨越既有路徑，連結新的可能。",
-        tagline: "Strategy, creativity, and connections for what comes next.",
-        intro: [
-          "KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。",
-          "我們相信好的解決方案不一定沿著既有路徑前進。就像桂馬跨越棋盤上的阻礙，KEIMA 從不同角度理解問題，串連產業、創作者、內容與數位工具，將分散的想法整理成可以真正執行的方向。",
-          "從遊戲與數位娛樂、創作者經濟，到品牌、專案與新型態服務，我們不只是完成被交付的工作，而是與合作夥伴一起釐清問題、建立方法，並找到下一步。",
-          "跨越既有路徑，連結新的可能。",
-        ],
-      },
-      person: {
-        label: "人物資訊",
-        name: "桂馬數位 專案顧問 / 鄭祤呈",
-        bio: "專案顧問，協助企業進行活動策劃、數位行銷及專案顧問，具10年活動企劃、8年群眾募資顧問經驗，累積舉辦及協力100場以上活動、為50家以上團隊專案顧問。",
-      },
-      portrait: pending("人物照片待提供"),
+      eyebrow: "Positioning",
+      title: "Positioning",
+      display: "WE CONNECT\nIDEAS,\nPEOPLE\nAND\nPOSSIBILITIES.",
+      intro:
+        "桂馬數位以策略與專案為核心，串連創作者、內容、產業與數位工具，將分散的想法整理成可以真正執行的方向。",
+      belief: "好的解決方案，不一定沿著既有路徑前進。",
     },
-    servicesLabel: "營運品牌",
-    services: [
-      {
-        id: "service-01",
-        index: "01",
-        status: ready("營運中"),
-        name: ready("INDIE-GUIDER"),
-        summary: ready("獨立遊戲資訊站"),
-        audience: ready("獨立遊戲開發者、玩家與產業觀察者"),
-        url: ready("https://indie-guider.games/"),
-        image: pending("服務圖片待提供"),
-      },
-      {
-        id: "service-02",
-        index: "02",
-        status: ready("營運中"),
-        name: ready("Jobsgame"),
-        summary: ready("台灣遊戲產業職缺與外包資訊平台"),
-        audience: ready("遊戲產業人才、團隊與外包合作夥伴"),
-        url: ready("https://jobsgame.tw/"),
-        image: pending("服務圖片待提供"),
-      },
-      {
-        id: "service-03",
-        index: "03",
-        status: ready("營運中"),
-        name: ready("GameCF"),
-        summary: ready("數位遊戲群眾募資資訊站"),
-        audience: ready("遊戲創作者、募資團隊與支持者"),
-        url: ready("https://gamecf.tw/"),
-        image: pending("服務圖片待提供"),
-      },
-    ],
-    contact: { label: "商務聯繫", email: ready("service@pa023315.com") },
+    approach: {
+      eyebrow: "Approach",
+      title: "HOW WE MOVE",
+      intro: "KEIMA 擅長處理橫跨不同領域、沒有標準答案的問題。",
+      items: [
+        {
+          id: "strategy",
+          index: "01",
+          title: "STRATEGY",
+          label: "策略與方向整理",
+          description: "從複雜資訊與不同需求之間，找出真正值得處理的問題與下一步。",
+        },
+        {
+          id: "projects",
+          index: "02",
+          title: "PROJECTS",
+          label: "專案推進",
+          description: "把想法轉換成可以被規劃、協作與執行的專案。",
+        },
+        {
+          id: "connections",
+          index: "03",
+          title: "CONNECTIONS",
+          label: "產業連結",
+          description: "串連創作者、企業、內容、資源與合作關係。",
+        },
+        {
+          id: "digital",
+          index: "04",
+          title: "DIGITAL",
+          label: "數位實驗",
+          description: "透過網站、工具、AI 與新的數位方法，建立新的可能。",
+        },
+      ],
+    },
+    inMotion: {
+      eyebrow: "In Motion",
+      title: "CURRENTLY IN MOTION",
+      intro: "目前正在運作與推進的計畫。",
+      projects: [
+        {
+          id: "jobsgame",
+          index: "01",
+          title: "JOBSGAME",
+          label: "Game Industry Career Platform",
+          description: "台灣遊戲產業職缺與職涯資訊平台。",
+          url: ready("https://jobsgame.tw/"),
+        },
+        {
+          id: "indie-guider",
+          index: "02",
+          title: "INDIE GUIDER",
+          label: "Independent Game Media",
+          description: "關注獨立遊戲、產業與開發者的媒體計畫。",
+          url: ready("https://indie-guider.games/"),
+        },
+        {
+          id: "creator-erp",
+          index: "03",
+          title: "CREATOR ERP",
+          label: "Tools for Creative Work",
+          description: "為創作者工作流程打造的新型態管理工具。",
+          url: pending("連結待提供"),
+        },
+        {
+          id: "consulting",
+          index: "04",
+          title: "CONSULTING",
+          label: "Strategy & Project Consulting",
+          description: "策略、群眾募資、創作者與數位娛樂相關專案顧問。",
+          url: pending("連結待提供"),
+        },
+      ],
+    },
+    philosophy: {
+      label: "Not every good move is a straight line",
+      display: "NOT EVERY\nGOOD MOVE\nIS A STRAIGHT\nLINE.",
+      body: "不是每一個好的選擇，都必須沿著既有路徑前進。",
+    },
+    profile: {
+      label: "Who is behind KEIMA",
+      title: "Who is behind KEIMA",
+      name: "IAN / 祤呈",
+      role: "Consultant / Project Director",
+      fields: ["Strategy", "Projects", "Creative Economy", "Game & Digital Entertainment"],
+      bio: [
+        "長期參與遊戲、娛樂、創作者經濟、群眾募資與數位服務相關專案，工作橫跨策略規劃、專案推進、商務合作與新服務建立。",
+        "相較於提供單一領域的標準答案，更關注如何整理複雜問題、串連不同資源，並將想法推進至實際執行。",
+      ],
+    },
+    contact: {
+      label: "Contact",
+      title: "WHAT'S YOUR NEXT MOVE?",
+      body: "有新的想法？我們可以一起找下一步。",
+      cta: "START A CONVERSATION →",
+      email: ready("service@pa023315.com"),
+    },
     footer: {
       social: pending("社群資訊待提供"),
       copyright: pending("版權資訊待提供"),
@@ -128,65 +209,124 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
   },
   en: {
     locale: "en",
-    nav: { home: "Home", about: "About", services: "Services", contact: "Contact" },
+    nav: {
+      home: "Home",
+      about: "About",
+      approach: "Approach",
+      "in-motion": "In Motion",
+      profile: "Profile",
+      contact: "Contact",
+    },
     hero: {
-      eyebrow: "KEIMA",
       statement: ready("Cross existing paths, connect new possibilities."),
-      scroll: "Scroll to explore",
+      supporting: "Beyond the expected path.",
+      disciplines: "STRATEGY / PROJECTS / CONNECTIONS / DIGITAL",
     },
     about: {
-      brand: {
-        label: "KEIMA",
-        headline: "Cross existing paths, connect new possibilities.",
-        tagline: "Strategy, creativity, and connections for what comes next.",
-        intro: [
-          "KEIMA is a digital consulting brand built around strategy, creativity, and connections.",
-          "We believe strong solutions do not always follow the existing path. Like the knight piece crossing the board from unexpected angles, KEIMA reframes problems, connects industries, creators, content, and digital tools, and turns scattered ideas into executable direction.",
-          "Across games and digital entertainment, the creator economy, brands, projects, and emerging services, we do more than complete assigned work. We clarify problems with partners, build practical methods, and find the next step together.",
-          "Cross existing paths, connect new possibilities.",
-        ],
-      },
-      person: {
-        label: "Person",
-        name: "KEIMA Project Consultant / Jheng Yu Cheng",
-        bio: "Project consultant supporting event planning, digital marketing, and project advisory work. He brings 10 years of event planning experience and 8 years as a crowdfunding consultant, with more than 100 events organized or supported and advisory experience for over 50 project teams.",
-      },
-      portrait: pending("Portrait pending"),
+      eyebrow: "Positioning",
+      title: "Positioning",
+      display: "WE CONNECT\nIDEAS,\nPEOPLE\nAND\nPOSSIBILITIES.",
+      intro:
+        "KEIMA connects creators, content, industries, and digital tools through strategy and project direction, turning scattered ideas into executable paths.",
+      belief: "Strong solutions do not always follow the expected path.",
     },
-    servicesLabel: "Operating Brands",
-    services: [
-      {
-        id: "service-01",
-        index: "01",
-        status: ready("Active"),
-        name: ready("INDIE-GUIDER"),
-        summary: ready("Independent game information site"),
-        audience: ready("Independent game developers, players, and industry observers"),
-        url: ready("https://indie-guider.games/"),
-        image: pending("Service image pending"),
-      },
-      {
-        id: "service-02",
-        index: "02",
-        status: ready("Active"),
-        name: ready("Jobsgame"),
-        summary: ready("Taiwan game industry jobs and outsourcing platform"),
-        audience: ready("Game industry talent, teams, and outsourcing partners"),
-        url: ready("https://jobsgame.tw/"),
-        image: pending("Service image pending"),
-      },
-      {
-        id: "service-03",
-        index: "03",
-        status: ready("Active"),
-        name: ready("GameCF"),
-        summary: ready("Digital game crowdfunding information site"),
-        audience: ready("Game creators, crowdfunding teams, and supporters"),
-        url: ready("https://gamecf.tw/"),
-        image: pending("Service image pending"),
-      },
-    ],
-    contact: { label: "Business Inquiry", email: ready("service@pa023315.com") },
+    approach: {
+      eyebrow: "Approach",
+      title: "HOW WE MOVE",
+      intro: "KEIMA works on cross-domain problems without standard answers.",
+      items: [
+        {
+          id: "strategy",
+          index: "01",
+          title: "STRATEGY",
+          label: "Direction framing",
+          description: "Clarify the real problem and the next step among complex needs.",
+        },
+        {
+          id: "projects",
+          index: "02",
+          title: "PROJECTS",
+          label: "Project movement",
+          description: "Turn ideas into plans, collaboration systems, and executable projects.",
+        },
+        {
+          id: "connections",
+          index: "03",
+          title: "CONNECTIONS",
+          label: "Industry connection",
+          description: "Connect creators, companies, content, resources, and partnerships.",
+        },
+        {
+          id: "digital",
+          index: "04",
+          title: "DIGITAL",
+          label: "Digital experiments",
+          description: "Use websites, tools, AI, and new digital methods to create new paths.",
+        },
+      ],
+    },
+    inMotion: {
+      eyebrow: "In Motion",
+      title: "CURRENTLY IN MOTION",
+      intro: "Projects currently operating or being developed.",
+      projects: [
+        {
+          id: "jobsgame",
+          index: "01",
+          title: "JOBSGAME",
+          label: "Game Industry Career Platform",
+          description: "A Taiwan game industry jobs and career information platform.",
+          url: ready("https://jobsgame.tw/"),
+        },
+        {
+          id: "indie-guider",
+          index: "02",
+          title: "INDIE GUIDER",
+          label: "Independent Game Media",
+          description: "A media project focused on indie games, industry, and developers.",
+          url: ready("https://indie-guider.games/"),
+        },
+        {
+          id: "creator-erp",
+          index: "03",
+          title: "CREATOR ERP",
+          label: "Tools for Creative Work",
+          description: "A new management tool for creative workflows.",
+          url: pending("Link pending"),
+        },
+        {
+          id: "consulting",
+          index: "04",
+          title: "CONSULTING",
+          label: "Strategy & Project Consulting",
+          description: "Consulting for strategy, crowdfunding, creators, and digital entertainment.",
+          url: pending("Link pending"),
+        },
+      ],
+    },
+    philosophy: {
+      label: "Not every good move is a straight line",
+      display: "NOT EVERY\nGOOD MOVE\nIS A STRAIGHT\nLINE.",
+      body: "Not every good move has to follow the expected path.",
+    },
+    profile: {
+      label: "Who is behind KEIMA",
+      title: "Who is behind KEIMA",
+      name: "IAN / Yu Cheng",
+      role: "Consultant / Project Director",
+      fields: ["Strategy", "Projects", "Creative Economy", "Game & Digital Entertainment"],
+      bio: [
+        "Ian works across games, entertainment, the creator economy, crowdfunding, and digital services, spanning strategy, project direction, business collaboration, and new service development.",
+        "Instead of offering a single-domain answer, he focuses on organizing complex problems, connecting resources, and moving ideas into execution.",
+      ],
+    },
+    contact: {
+      label: "Contact",
+      title: "WHAT'S YOUR NEXT MOVE?",
+      body: "Have a new idea? We can find the next move together.",
+      cta: "START A CONVERSATION →",
+      email: ready("service@pa023315.com"),
+    },
     footer: {
       social: pending("Social information pending"),
       copyright: pending("Copyright information pending"),

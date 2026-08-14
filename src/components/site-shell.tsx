@@ -1,10 +1,13 @@
 import type { LocaleContent } from "@/content/site-content";
 import { About } from "@/components/about";
+import { Approach } from "@/components/approach";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Navigation } from "@/components/navigation";
-import { Services } from "@/components/services";
+import { Philosophy } from "@/components/philosophy";
+import { Profile } from "@/components/profile";
+import { ProjectList } from "@/components/project-list";
 
 type SiteShellProps = {
   content: LocaleContent;
@@ -22,7 +25,10 @@ export function SiteShell({ content }: SiteShellProps) {
       <main id="main" data-locale={content.locale}>
         <Hero content={content} />
         <About content={content} />
-        <Services content={content} />
+        <Approach content={content} />
+        <ProjectList content={content} />
+        <Philosophy content={content} />
+        <Profile content={content} />
         <Contact content={content} />
       </main>
       <Footer content={content} />

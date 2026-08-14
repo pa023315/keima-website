@@ -2,10 +2,13 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { About } from "@/components/about";
+import { Approach } from "@/components/approach";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { Services } from "@/components/services";
+import { Philosophy } from "@/components/philosophy";
+import { Profile } from "@/components/profile";
+import { ProjectList } from "@/components/project-list";
 import { siteContent, type LocaleContent } from "@/content/site-content";
 
 const zhContent = siteContent["zh-TW"];
@@ -33,20 +36,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function renderReadyServiceUrl(value: string) {
-  const content: LocaleContent = {
-    ...zhContent,
-    services: [
-      {
-        ...zhContent.services[0],
-        url: { status: "ready", value },
-      },
-    ],
-  };
-
-  render(<Services content={content} />);
-}
-
 describe("Hero", () => {
   it("uses the official logo as the hero display and keeps the statement as a subtitle", () => {
     render(<Hero content={zhContent} />);
@@ -64,142 +53,106 @@ describe("Hero", () => {
       "hero-reveal",
       "hero-subtitle",
     );
+    expect(within(hero).getByText("Beyond the expected path.")).toHaveClass("hero-supporting");
+    expect(within(hero).getByText("STRATEGY / PROJECTS / CONNECTIONS / DIGITAL")).toBeVisible();
     expect(screen.queryByRole("link", { name: /向下探索/ })).not.toBeInTheDocument();
   });
 });
 
 describe("About", () => {
-  it("presents brand information first and person information in a separate following block", () => {
+  it("presents KEIMA positioning as an editorial brand statement", () => {
     render(<About content={zhContent} />);
 
     expect(screen.queryByText("人物介紹")).not.toBeInTheDocument();
     expect(screen.queryByText("桂馬資訊")).not.toBeInTheDocument();
+    expect(screen.queryByText("運作中服務")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "跨越既有路徑，連結新的可能。" }),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("Strategy, creativity, and connections for what comes next."),
-    ).not.toBeInTheDocument();
 
     const about = screen.getByRole("region", {
-      name: "KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。",
+      name: "Positioning",
     });
-    const brandPanel = about.querySelector(".about-brand-panel");
-    const personPanel = about.querySelector(".about-person-panel");
-    const portrait = screen.getByRole("img", { name: "人物照片待提供" }).closest(".about-portrait");
-    const role = screen.getByText("桂馬數位 專案顧問");
-    const name = screen.getByRole("heading", { name: "鄭祤呈" });
-
-    expect(brandPanel).toBeInTheDocument();
-    expect(personPanel).toBeInTheDocument();
-    expect(brandPanel?.querySelector(".about-portrait")).not.toBeInTheDocument();
-    expect(personPanel?.querySelector(".about-portrait")).toBe(portrait);
-    expect(personPanel?.querySelector(".about-person-role")).toBe(role);
-    expect(personPanel?.querySelector(".about-person-name")).toBe(name);
-    expect(portrait?.compareDocumentPosition(role)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(brandPanel?.compareDocumentPosition(personPanel as Element)).toBe(
-      Node.DOCUMENT_POSITION_FOLLOWING,
+    expect(within(about).getByRole("heading", { name: /WE CONNECT/ })).toHaveClass(
+      "positioning-display",
     );
     expect(
-      screen.getByText("KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。"),
+      within(about).getByText(
+        "桂馬數位以策略與專案為核心，串連創作者、內容、產業與數位工具，將分散的想法整理成可以真正執行的方向。",
+      ),
     ).toBeVisible();
-    expect(screen.getByText("人物資訊")).toBeVisible();
-    expect(role).toBeVisible();
-    expect(name).toBeVisible();
-    expect(screen.queryByRole("heading", { name: "桂馬數位 專案顧問 / 鄭祤呈" })).not.toBeInTheDocument();
-    expect(screen.getByText(/具10年活動企劃、8年群眾募資顧問經驗/)).toBeVisible();
-    expect(portrait).toHaveClass("about-portrait--compact");
+    expect(within(about).getByText("好的解決方案，不一定沿著既有路徑前進。")).toHaveClass(
+      "positioning-belief",
+    );
   });
 });
 
-describe("Services", () => {
-  it("renders the three sourced operating brands as an editorial brand card grid", () => {
-    render(<Services content={zhContent} />);
+describe("Approach", () => {
+  it("renders HOW WE MOVE as full-width editorial rows instead of service cards", () => {
+    render(<Approach content={zhContent} />);
 
-    expect(screen.queryByText("運作中服務")).not.toBeInTheDocument();
-    const section = screen.getByRole("region", { name: "營運品牌" });
-    expect(within(section).getByRole("heading", { name: "營運品牌" })).toHaveClass(
-      "services-title",
+    const section = screen.getByRole("region", { name: "HOW WE MOVE" });
+    expect(within(section).getByRole("heading", { name: "HOW WE MOVE" })).toHaveClass(
+      "approach-title",
     );
-    expect(within(section).getByText("已公開營運中的內容與產業資訊品牌")).toHaveClass(
-      "services-summary",
+    const rows = section.querySelectorAll(".approach-row");
+
+    expect(rows).toHaveLength(4);
+    expect(within(section).getByRole("heading", { name: "STRATEGY" })).toBeVisible();
+    expect(within(section).getByRole("heading", { name: "PROJECTS" })).toBeVisible();
+    expect(within(section).getByRole("heading", { name: "CONNECTIONS" })).toBeVisible();
+    expect(within(section).getByRole("heading", { name: "DIGITAL" })).toBeVisible();
+    expect(section.querySelector(".service-card")).not.toBeInTheDocument();
+  });
+});
+
+describe("ProjectList", () => {
+  it("renders currently in motion projects as rows with only ready links clickable", () => {
+    render(<ProjectList content={zhContent} />);
+
+    const section = screen.getByRole("region", { name: "CURRENTLY IN MOTION" });
+    const rows = section.querySelectorAll(".project-row");
+
+    expect(rows).toHaveLength(4);
+    expect(within(section).getByRole("link", { name: /JOBSGAME/ })).toHaveAttribute(
+      "href",
+      "https://jobsgame.tw/",
     );
-    const services = within(section).getAllByRole("listitem");
-
-    expect(services).toHaveLength(3);
-    expect(services[0]).toHaveClass("service-card");
-    expect(within(section).getByRole("heading", { name: "INDIE-GUIDER" })).toBeVisible();
-    expect(within(section).getByRole("heading", { name: "Jobsgame" })).toBeVisible();
-    expect(within(section).getByRole("heading", { name: "GameCF" })).toBeVisible();
-    expect(
-      within(section).getByRole("link", { name: "https://indie-guider.games/" }),
-    ).toHaveAttribute("href", "https://indie-guider.games/");
-    expect(within(section).getByText("獨立遊戲資訊站")).toBeVisible();
-    expect(within(section).getByText("台灣遊戲產業職缺與外包資訊平台")).toBeVisible();
-    expect(within(section).getByText("數位遊戲群眾募資資訊站")).toBeVisible();
-    expect(within(section).getAllByRole("img", { name: "服務圖片待提供" })).toHaveLength(3);
-    expect(section.querySelectorAll(".service-reveal")).toHaveLength(3);
-    expect(section.querySelectorAll(".service-item[data-motion-accent='service-card']")).toHaveLength(3);
-  });
-
-  it("uses real links and images only when service content is ready", () => {
-    const readyContent: LocaleContent = {
-      ...zhContent,
-      services: [
-        {
-          ...zhContent.services[0],
-          name: { status: "ready", value: "Ready service" },
-          url: { status: "ready", value: "https://service.keima.test/service" },
-          image: { status: "ready", value: "/ready-service.jpg" },
-        },
-      ],
-    };
-
-    render(<Services content={readyContent} />);
-
-    expect(
-      screen.getByRole("link", { name: "https://service.keima.test/service" }),
-    ).toHaveAttribute("href", "https://service.keima.test/service");
-    expect(
-      screen.getByRole("link", { name: "https://service.keima.test/service" }),
-    ).not.toHaveAttribute("target");
-    expect(screen.getByRole("img", { name: "Ready service" })).toHaveAttribute(
-      "src",
-      "/ready-service.jpg",
+    expect(within(section).getByRole("link", { name: /INDIE GUIDER/ })).toHaveAttribute(
+      "href",
+      "https://indie-guider.games/",
     );
+    expect(within(section).queryByRole("link", { name: /CREATOR ERP/ })).not.toBeInTheDocument();
+    expect(within(section).getByText("CREATOR ERP")).toBeVisible();
+    expect(within(section).getByText("CONSULTING")).toBeVisible();
   });
+});
 
-  it.each([
-    "/\\evil.example/path",
-    "/%5cevil.example/path",
-    "//evil.example",
-    " /path",
-    "/path ",
-    "/path\nnext",
-    "/%0aevil.example/path",
-    "javascript:alert(1)",
-    "http://unsafe.keima.test/path",
-  ])("does not make unsafe ready service URL %j clickable", (unsafeUrl) => {
-    renderReadyServiceUrl(unsafeUrl);
+describe("Philosophy", () => {
+  it("renders the straight-line philosophy as a text-only brand moment", () => {
+    render(<Philosophy content={zhContent} />);
 
-    const urlDefinition = screen.getByText("網址").closest("div")?.querySelector("dd");
-    expect(urlDefinition).toBeVisible();
-    expect(urlDefinition?.textContent).toBe(unsafeUrl);
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
-  });
-
-  it("normalizes a safe same-origin relative service path", () => {
-    renderReadyServiceUrl("/section/../path?from=service#details");
-
+    const section = screen.getByRole("region", { name: "Not every good move is a straight line" });
+    expect(within(section).getByRole("heading", { name: /NOT EVERY/ })).toHaveClass(
+      "philosophy-display",
+    );
     expect(
-      screen.getByRole("link", { name: "/section/../path?from=service#details" }),
-    ).toHaveAttribute("href", "/path?from=service#details");
+      within(section).getByText("不是每一個好的選擇，都必須沿著既有路徑前進。"),
+    ).toBeVisible();
   });
+});
 
-  it("accepts a valid root-relative service path", () => {
-    renderReadyServiceUrl("/path");
+describe("Profile", () => {
+  it("introduces Ian without becoming a resume", () => {
+    render(<Profile content={zhContent} />);
 
-    expect(screen.getByRole("link", { name: "/path" })).toHaveAttribute("href", "/path");
+    const section = screen.getByRole("region", { name: "Who is behind KEIMA" });
+    expect(within(section).getByRole("heading", { name: "IAN / 祤呈" })).toBeVisible();
+    expect(within(section).getByText("Consultant / Project Director")).toBeVisible();
+    expect(within(section).getByText("Strategy")).toBeVisible();
+    expect(within(section).getByText("Game & Digital Entertainment")).toBeVisible();
+    expect(within(section).queryByText("10年活動企劃")).not.toBeInTheDocument();
+    expect(within(section).queryByText("8年群眾募資顧問經驗")).not.toBeInTheDocument();
   });
 });
 
@@ -207,11 +160,11 @@ describe("Contact", () => {
   it("shows a pending business email as text rather than a mail link", () => {
     render(<Contact content={zhContent} />);
 
-    expect(screen.getByRole("region", { name: "商務聯繫" })).toHaveAttribute(
+    expect(screen.getByRole("region", { name: "WHAT'S YOUR NEXT MOVE?" })).toHaveAttribute(
       "data-motion-accent",
       "contact-finale",
     );
-    expect(screen.getByRole("link", { name: "service@pa023315.com" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /service@pa023315.com/ })).toHaveAttribute(
       "href",
       "mailto:service@pa023315.com",
     );
@@ -225,7 +178,7 @@ describe("Contact", () => {
 
     render(<Contact content={readyContent} />);
 
-    expect(screen.getByRole("link", { name: "hello@keima.test" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /hello@keima.test/ })).toHaveAttribute(
       "href",
       "mailto:hello@keima.test",
     );
@@ -243,8 +196,10 @@ describe("Footer", () => {
     const footerNavigation = screen.getByRole("navigation", { name: "頁尾導覽" });
     const expectedLinks = [
       ["首頁", "#home"],
-      ["介紹", "#about"],
-      ["服務", "#services"],
+      ["About", "#about"],
+      ["Approach", "#approach"],
+      ["In Motion", "#in-motion"],
+      ["Profile", "#profile"],
       ["聯繫", "#contact"],
     ] as const;
 
