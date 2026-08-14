@@ -255,10 +255,10 @@ a {
 .hero-cut {
   position: absolute;
   z-index: 0;
-  top: 18%;
+  top: 0;
   right: -9%;
   width: 35%;
-  height: 63%;
+  height: 100%;
   --hero-cut-shape: polygon(23% 0, 100% 0, 100% 100%, 0 100%, 38% 56%);
   background: var(--keima-ink);
   clip-path: var(--hero-cut-shape);

@@ -37,6 +37,21 @@ test("mobile uses the standalone color symbol", async ({ page }) => {
   );
 });
 
+test("desktop hero cut aligns with the hero top and bottom edges", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const heroBox = await page.locator("#home").boundingBox();
+  const cutBox = await page.locator(".hero-cut").boundingBox();
+
+  expect(heroBox).not.toBeNull();
+  expect(cutBox).not.toBeNull();
+  expect(Math.abs(cutBox!.y - heroBox!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(cutBox!.y + cutBox!.height - (heroBox!.y + heroBox!.height))).toBeLessThanOrEqual(
+    1,
+  );
+});
+
 test("language switching persists the selected locale and current section", async ({ page }) => {
   await page.goto("/zh-TW/#home");
 
