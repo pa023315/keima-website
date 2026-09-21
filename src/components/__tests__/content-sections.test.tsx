@@ -113,7 +113,7 @@ describe("ProjectList", () => {
     const section = screen.getByRole("region", { name: "CURRENTLY IN MOTION" });
     const rows = section.querySelectorAll(".project-row");
 
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(3);
     expect(within(section).getByRole("link", { name: /JOBSGAME/ })).toHaveAttribute(
       "href",
       "https://jobsgame.tw/",
@@ -122,9 +122,12 @@ describe("ProjectList", () => {
       "href",
       "https://indie-guider.games/",
     );
-    expect(within(section).queryByRole("link", { name: /CREATOR ERP/ })).not.toBeInTheDocument();
-    expect(within(section).getByText("CREATOR ERP")).toBeVisible();
-    expect(within(section).getByText("CONSULTING")).toBeVisible();
+    expect(within(section).getByRole("link", { name: /GAMECF/ })).toHaveAttribute(
+      "href",
+      "https://gamecf.tw/",
+    );
+    expect(within(section).queryByText("CREATOR ERP")).not.toBeInTheDocument();
+    expect(within(section).queryByText("CONSULTING")).not.toBeInTheDocument();
   });
 });
 

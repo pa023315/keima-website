@@ -15,19 +15,13 @@ describe("siteContent", () => {
         "connections",
         "digital",
       ]);
-      expect(locale.inMotion.projects).toHaveLength(4);
+      expect(locale.inMotion.projects).toHaveLength(3);
       expect(locale.inMotion.projects.map((project) => project.id)).toEqual([
         "jobsgame",
         "indie-guider",
-        "creator-erp",
-        "consulting",
+        "gamecf",
       ]);
-      expect(locale.inMotion.projects.map((project) => project.index)).toEqual([
-        "01",
-        "02",
-        "03",
-        "04",
-      ]);
+      expect(locale.inMotion.projects.map((project) => project.index)).toEqual(["01", "02", "03"]);
     }
   });
 
@@ -54,20 +48,19 @@ describe("siteContent", () => {
     expect(zh.inMotion.projects.map((project) => project.url)).toEqual([
       { status: "ready", value: "https://jobsgame.tw/" },
       { status: "ready", value: "https://indie-guider.games/" },
-      { status: "pending", label: "連結待提供" },
-      { status: "pending", label: "連結待提供" },
+      { status: "ready", value: "https://gamecf.tw/" },
     ]);
   });
 
-  it("keeps unprovided project links pending instead of inventing URLs", () => {
+  it("keeps the original project list without invented projects", () => {
     const zh = siteContent["zh-TW"];
 
-    expect(zh.inMotion.projects.find((project) => project.id === "creator-erp")?.url).toEqual(
-      { status: "pending", label: "連結待提供" },
-    );
-    expect(zh.inMotion.projects.find((project) => project.id === "consulting")?.url).toEqual(
-      { status: "pending", label: "連結待提供" },
-    );
+    expect(zh.inMotion.projects.find((project) => project.id === "gamecf")?.url).toEqual({
+      status: "ready",
+      value: "https://gamecf.tw/",
+    });
+    expect(zh.inMotion.projects.find((project) => project.id === "creator-erp")).toBeUndefined();
+    expect(zh.inMotion.projects.find((project) => project.id === "consulting")).toBeUndefined();
   });
 
   it("marks only still-unprovided business facts as pending", () => {

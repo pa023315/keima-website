@@ -109,7 +109,7 @@ test("mobile project rows stay compact enough for a paced long-scroll section", 
     .locator("#in-motion")
     .evaluate((section) => Math.round(section.getBoundingClientRect().height));
 
-  expect(rowHeights).toHaveLength(4);
+  expect(rowHeights).toHaveLength(3);
   expect(Math.max(...rowHeights)).toBeLessThanOrEqual(260);
   expect(sectionHeight).toBeLessThanOrEqual(1500);
 });
