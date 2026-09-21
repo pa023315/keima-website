@@ -1412,6 +1412,17 @@ a {
     grid-column: 1 / -1;
   }
 
+  .positioning .section-heading-block,
+  .profile-heading {
+    grid-column: 1 / 4;
+  }
+
+  .positioning-copy,
+  .profile-card {
+    grid-column: 4 / -1;
+    align-self: end;
+  }
+
   .approach-row .reveal-content,
   .project-row-content {
     grid-template-columns: minmax(2.5rem, 0.35fr) minmax(10rem, 1.3fr) minmax(0, 1fr);
@@ -1434,8 +1445,9 @@ a {
   }
 
   .primary-navigation a {
-    font-size: 0.54rem;
-    letter-spacing: 0.04em;
+    min-height: 44px;
+    font-size: 0.625rem;
+    letter-spacing: 0.015em;
   }
 
   .hero-supporting {
@@ -1456,9 +1468,46 @@ a {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .positioning .section-heading-block,
+  .positioning-copy,
+  .profile-heading,
+  .profile-card {
+    grid-column: 1 / -1;
+  }
+
+  .positioning-copy,
+  .profile-card {
+    margin-top: 0.5rem;
+  }
+
   .positioning-display,
   .philosophy-display {
-    font-size: clamp(3rem, 15vw, 5rem);
+    font-size: clamp(2.75rem, 13vw, 3.5rem);
+    line-height: 0.95;
+  }
+
+  .approach-title,
+  .in-motion-title,
+  .profile-heading h2 {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+    line-height: 1;
+  }
+
+  .profile-card h3 {
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+  }
+
+  .contact-title {
+    font-size: clamp(3rem, 14vw, 4rem);
+    line-height: 0.92;
+  }
+
+  .section-intro,
+  .positioning-copy p,
+  .row-description,
+  .project-description,
+  .profile-bio p {
+    font-size: 1rem;
   }
 
   .approach-row .reveal-content,

@@ -166,3 +166,51 @@ test("desktop approach and project rows share a readable grid system", async ({ 
   expect(styles.descriptionSize).toBeGreaterThanOrEqual(16);
   expect(styles.descriptionLineHeight / styles.descriptionSize).toBeGreaterThanOrEqual(1.65);
 });
+
+test("tablet keeps positioning and profile as balanced two-column compositions", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 1000 });
+  await page.goto("/zh-TW/");
+
+  const boxes = await page.evaluate(() => {
+    const box = (selector: string) =>
+      document.querySelector<HTMLElement>(selector)!.getBoundingClientRect();
+    const aboutHeading = box(".positioning .section-heading-block");
+    const aboutCopy = box(".positioning-copy");
+    const profileHeading = box(".profile-heading");
+    const profileCard = box(".profile-card");
+
+    return {
+      about: [aboutHeading.x, aboutCopy.x, Math.abs(aboutHeading.y - aboutCopy.y)],
+      profile: [profileHeading.x, profileCard.x, Math.abs(profileHeading.y - profileCard.y)],
+    };
+  });
+
+  expect(boxes.about[0]).toBeLessThan(boxes.about[1]);
+  expect(boxes.profile[0]).toBeLessThan(boxes.profile[1]);
+  expect(boxes.about[2]).toBeLessThanOrEqual(140);
+  expect(boxes.profile[2]).toBeLessThanOrEqual(140);
+});
+
+test("mobile navigation and body typography remain legible", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh-TW/");
+
+  const metrics = await page.evaluate(() => {
+    const style = (selector: string) =>
+      getComputedStyle(document.querySelector<HTMLElement>(selector)!);
+
+    return {
+      navSize: Number.parseFloat(style(".primary-navigation a").fontSize),
+      navHeight: document
+        .querySelector<HTMLElement>(".primary-navigation a")!
+        .getBoundingClientRect().height,
+      bodySize: Number.parseFloat(style(".profile-bio p").fontSize),
+      positioningSize: Number.parseFloat(style(".positioning-display").fontSize),
+    };
+  });
+
+  expect(metrics.navSize).toBeGreaterThanOrEqual(10);
+  expect(metrics.navHeight).toBeGreaterThanOrEqual(44);
+  expect(metrics.bodySize).toBeGreaterThanOrEqual(16);
+  expect(metrics.positioningSize).toBeLessThanOrEqual(56);
+});
