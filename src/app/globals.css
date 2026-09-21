@@ -1100,8 +1100,8 @@ a {
   max-width: 30rem;
   margin: 1.25rem 0 0;
   color: var(--text-secondary);
-  font-size: clamp(1rem, 1.1vw, 1.2rem);
-  line-height: 1.75;
+  font-size: var(--type-body);
+  line-height: 1.78;
 }
 
 .positioning-index,
@@ -1173,10 +1173,10 @@ a {
 .approach-row .reveal-content,
 .project-row-content {
   display: grid;
-  grid-template-columns: minmax(3rem, 0.45fr) minmax(11rem, 2fr) minmax(10rem, 1.25fr) minmax(16rem, 2.4fr) auto;
-  gap: clamp(0.75rem, 1.6vw, 2rem);
+  grid-template-columns: minmax(2.75rem, 0.4fr) minmax(10rem, 1.7fr) minmax(9rem, 1.15fr) minmax(18rem, 2.5fr) 2rem;
+  gap: clamp(0.75rem, 1.4vw, 1.75rem);
   align-items: baseline;
-  padding: clamp(1.2rem, 2.4vw, 2.25rem) 0;
+  padding: clamp(1.25rem, 1.9vw, 1.8rem) 0;
 }
 
 .project-row a.project-row-content {
@@ -1194,27 +1194,27 @@ a {
 .project-title {
   margin: 0;
   color: var(--keima-ink);
-  font-size: clamp(1.65rem, 3.4vw, 4rem);
-  font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 0.95;
+  font-size: clamp(1.65rem, 2.6vw, 3rem);
+  font-weight: 620;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
 .row-label,
 .project-label {
   margin: 0;
   color: var(--keima-ink);
-  font-size: clamp(0.95rem, 1vw, 1.1rem);
-  font-weight: 850;
-  letter-spacing: 0.03em;
+  font-size: var(--type-body);
+  font-weight: 700;
+  letter-spacing: 0.015em;
 }
 
 .row-description,
 .project-description {
   margin: 0;
-  color: var(--text-secondary);
-  font-size: clamp(0.95rem, 1vw, 1.08rem);
-  line-height: 1.65;
+  color: #57544d;
+  font-size: var(--type-body);
+  line-height: 1.7;
 }
 
 .project-arrow {
@@ -1339,8 +1339,8 @@ a {
 
 .profile-bio p {
   margin: 0;
-  color: var(--text-primary);
-  font-size: clamp(1.02rem, 1.15vw, 1.22rem);
+  color: var(--keima-ink);
+  font-size: var(--type-body);
   line-height: 1.78;
 }
 

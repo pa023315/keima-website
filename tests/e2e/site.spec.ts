@@ -137,3 +137,32 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
   expect(sizes.contact).toBeLessThanOrEqual(104);
   expect(sizes.body).toBeGreaterThanOrEqual(17);
 });
+
+test("desktop approach and project rows share a readable grid system", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const styles = await page.evaluate(() => {
+    const read = (selector: string) =>
+      getComputedStyle(document.querySelector<HTMLElement>(selector)!);
+    const x = (selector: string) =>
+      document.querySelector<HTMLElement>(selector)!.getBoundingClientRect().x;
+    const approach = read(".approach-row .reveal-content");
+    const description = read(".row-description");
+
+    return {
+      approachPositions: [x(".approach-row h3"), x(".approach-row .row-label"), x(".row-description")],
+      projectPositions: [x(".project-title"), x(".project-label"), x(".project-description")],
+      approachPadding: Number.parseFloat(approach.paddingTop),
+      descriptionSize: Number.parseFloat(description.fontSize),
+      descriptionLineHeight: Number.parseFloat(description.lineHeight),
+    };
+  });
+
+  styles.approachPositions.forEach((position, index) => {
+    expect(Math.abs(position - styles.projectPositions[index])).toBeLessThanOrEqual(1);
+  });
+  expect(styles.approachPadding).toBeLessThanOrEqual(30);
+  expect(styles.descriptionSize).toBeGreaterThanOrEqual(16);
+  expect(styles.descriptionLineHeight / styles.descriptionSize).toBeGreaterThanOrEqual(1.65);
+});
