@@ -130,13 +130,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
           label: "產業連結",
           description: "串連創作者、企業、內容、資源與合作關係。",
         },
-        {
-          id: "digital",
-          index: "04",
-          title: "DIGITAL",
-          label: "數位實驗",
-          description: "透過網站、工具、AI 與新的數位方法，建立新的可能。",
-        },
       ],
     },
     inMotion: {
@@ -247,13 +240,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
           title: "CONNECTIONS",
           label: "Industry connection",
           description: "Connect creators, companies, content, resources, and partnerships.",
-        },
-        {
-          id: "digital",
-          index: "04",
-          title: "DIGITAL",
-          label: "Digital experiments",
-          description: "Use websites, tools, AI, and new digital methods to create new paths.",
         },
       ],
     },

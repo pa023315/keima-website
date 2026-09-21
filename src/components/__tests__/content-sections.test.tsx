@@ -97,11 +97,11 @@ describe("Approach", () => {
     );
     const rows = section.querySelectorAll(".approach-row");
 
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(3);
     expect(within(section).getByRole("heading", { name: "STRATEGY" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "PROJECTS" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "CONNECTIONS" })).toBeVisible();
-    expect(within(section).getByRole("heading", { name: "DIGITAL" })).toBeVisible();
+    expect(within(section).queryByRole("heading", { name: "DIGITAL" })).not.toBeInTheDocument();
     expect(section.querySelector(".service-card")).not.toBeInTheDocument();
   });
 });

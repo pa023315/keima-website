@@ -8,12 +8,11 @@ describe("siteContent", () => {
 
   it("provides the approved approach and in-motion structures in each locale", () => {
     for (const locale of Object.values(siteContent)) {
-      expect(locale.approach.items).toHaveLength(4);
+      expect(locale.approach.items).toHaveLength(3);
       expect(locale.approach.items.map((item) => item.id)).toEqual([
         "strategy",
         "projects",
         "connections",
-        "digital",
       ]);
       expect(locale.inMotion.projects).toHaveLength(3);
       expect(locale.inMotion.projects.map((project) => project.id)).toEqual([
