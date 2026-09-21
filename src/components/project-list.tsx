@@ -16,35 +16,46 @@ function safeProjectHref(project: ProjectContent) {
   }
 }
 
-function ProjectRow({ project, index }: { project: ProjectContent; index: number }) {
+function ProjectCard({ project, index }: { project: ProjectContent; index: number }) {
   const href = safeProjectHref(project);
-  const rowContent = (
+  const cardContent = (
     <>
-      <span className="row-index" aria-hidden="true">
-        {project.index}
-      </span>
-      <span className="project-title">{project.title}</span>
-      <span className="project-label">{project.label}</span>
-      <span className="project-description">{project.description}</span>
-      <span className="project-arrow" aria-hidden="true">
-        →
-      </span>
+      <div className="project-media" aria-hidden="true">
+        <span className="project-media-shape project-media-shape--primary" />
+        <span className="project-media-shape project-media-shape--secondary" />
+        <span className="project-media-marker">
+          {project.index} / {project.title}
+        </span>
+      </div>
+      <div className="project-card-copy">
+        <div className="project-card-text">
+          <h3 className="project-title">{project.title}</h3>
+          <p className="project-label">{project.label}</p>
+          <p className="project-description">{project.description}</p>
+        </div>
+        <span className="project-arrow" aria-hidden="true">
+          ↗
+        </span>
+      </div>
     </>
   );
 
   return (
-    <li className="project-row" data-link-state={href ? "ready" : "pending"}>
-      <Reveal delay={index * 0.06}>
+    <li
+      className={`project-card project-card--${project.id}`}
+      data-link-state={href ? "ready" : "pending"}
+    >
+      <Reveal delay={index * 0.08}>
         {href ? (
           <a
-            className="project-row-content"
+            className="project-card-link"
             href={href}
             aria-label={`${project.title} — ${project.label}`}
           >
-            {rowContent}
+            {cardContent}
           </a>
         ) : (
-          <div className="project-row-content">{rowContent}</div>
+          <div className="project-card-link">{cardContent}</div>
         )}
       </Reveal>
     </li>
@@ -73,7 +84,7 @@ export function ProjectList({ content }: ProjectListProps) {
         </div>
         <ol className="project-list">
           {inMotion.projects.map((project, index) => (
-            <ProjectRow key={project.id} project={project} index={index} />
+            <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </ol>
       </div>
