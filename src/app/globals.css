@@ -20,6 +20,13 @@
   --ease-keima: cubic-bezier(0.22, 1, 0.36, 1);
   --header-height: 5.5rem;
   --mobile-nav-height: 3.375rem;
+  --type-display-xl: clamp(3.75rem, 6.4vw, 7rem);
+  --type-display-lg: clamp(3.25rem, 5.6vw, 6rem);
+  --type-display-md: clamp(2.6rem, 4.6vw, 4.5rem);
+  --type-heading: clamp(1.9rem, 2.7vw, 3.25rem);
+  --type-body-lg: clamp(1.0625rem, 1.2vw, 1.25rem);
+  --type-body: clamp(1rem, 1.05vw, 1.125rem);
+  --measure-copy: 34rem;
 }
 
 html {
@@ -1119,11 +1126,11 @@ a {
 }
 
 .positioning-display {
-  max-width: 9ch;
-  font-size: clamp(3.6rem, 7.5vw, 9rem);
-  font-weight: 650;
-  letter-spacing: -0.075em;
-  line-height: 0.82;
+  max-width: 12ch;
+  font-size: var(--type-display-lg);
+  font-weight: 620;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
 }
 
 .positioning-copy {
@@ -1134,9 +1141,11 @@ a {
 }
 
 .positioning-copy p {
+  max-width: var(--measure-copy);
   margin: 0;
-  color: var(--text-primary);
-  font-size: clamp(1.05rem, 1.35vw, 1.42rem);
+  color: var(--keima-ink);
+  font-size: var(--type-body-lg);
+  font-weight: 450;
   line-height: 1.78;
 }
 
@@ -1239,12 +1248,12 @@ a {
 }
 
 .philosophy-display {
-  max-width: 9ch;
+  max-width: 12ch;
   color: var(--surface-light);
-  font-size: clamp(4rem, 8vw, 9.5rem);
-  font-weight: 650;
-  letter-spacing: -0.075em;
-  line-height: 0.82;
+  font-size: var(--type-display-lg);
+  font-weight: 620;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
 }
 
 .philosophy-copy p:not(.section-kicker) {
@@ -1274,12 +1283,12 @@ a {
 }
 
 .profile-heading h2 {
-  max-width: 9ch;
+  max-width: 12ch;
   margin: 0;
-  font-size: clamp(2.4rem, 4.5vw, 5.25rem);
-  font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: 0.95;
+  font-size: var(--type-heading);
+  font-weight: 620;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .profile-card {
@@ -1298,10 +1307,10 @@ a {
 
 .profile-card h3 {
   margin: 0.45rem 0 0;
-  font-size: clamp(3rem, 6vw, 7rem);
-  font-weight: 650;
-  letter-spacing: -0.06em;
-  line-height: 0.9;
+  font-size: var(--type-display-md);
+  font-weight: 620;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
 }
 
 .profile-fields {
@@ -1337,13 +1346,13 @@ a {
 
 .contact-title {
   grid-column: 2 / 10;
-  max-width: 10ch;
+  max-width: 12ch;
   margin: 0;
   color: var(--surface-light);
-  font-size: clamp(4rem, 8.5vw, 10rem);
-  font-weight: 650;
-  letter-spacing: -0.075em;
-  line-height: 0.82;
+  font-size: var(--type-display-xl);
+  font-weight: 620;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
 }
 
 .contact-label {

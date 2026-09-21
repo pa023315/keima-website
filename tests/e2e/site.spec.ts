@@ -113,3 +113,27 @@ test("mobile project rows stay compact enough for a paced long-scroll section", 
   expect(Math.max(...rowHeights)).toBeLessThanOrEqual(260);
   expect(sectionHeight).toBeLessThanOrEqual(1500);
 });
+
+test("desktop uses the restrained consultancy type hierarchy", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const sizes = await page.evaluate(() => {
+    const px = (selector: string) =>
+      Number.parseFloat(getComputedStyle(document.querySelector<HTMLElement>(selector)!).fontSize);
+
+    return {
+      positioning: px(".positioning-display"),
+      philosophy: px(".philosophy-display"),
+      profileName: px(".profile-card h3"),
+      contact: px(".contact-title"),
+      body: px(".positioning-copy p"),
+    };
+  });
+
+  expect(sizes.positioning).toBeLessThanOrEqual(96);
+  expect(sizes.philosophy).toBeLessThanOrEqual(100);
+  expect(sizes.profileName).toBeLessThanOrEqual(72);
+  expect(sizes.contact).toBeLessThanOrEqual(104);
+  expect(sizes.body).toBeGreaterThanOrEqual(17);
+});
