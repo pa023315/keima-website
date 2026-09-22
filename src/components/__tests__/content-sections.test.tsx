@@ -53,7 +53,7 @@ describe("Hero", () => {
       "hero-subtitle",
     );
     expect(within(hero).getByText("Beyond the expected path.")).toHaveClass("hero-supporting");
-    expect(within(hero).getByText("STRATEGY / PROJECTS / CONNECTIONS / DIGITAL")).toBeVisible();
+    expect(within(hero).queryByText("STRATEGY / PROJECTS / CONNECTIONS / DIGITAL")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /向下探索/ })).not.toBeInTheDocument();
   });
 });

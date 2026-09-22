@@ -1052,8 +1052,7 @@ a {
   }
 }
 
-.hero-supporting,
-.hero-disciplines {
+.hero-supporting {
   margin: 0;
   color: var(--text-secondary);
 }
@@ -1063,16 +1062,6 @@ a {
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1.35;
-}
-
-.hero-disciplines {
-  max-width: 38rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--border-primary);
-  font-size: clamp(0.72rem, 0.8vw, 0.86rem);
-  font-weight: 850;
-  letter-spacing: 0.14em;
-  line-height: 1.45;
 }
 
 .brand-section {
@@ -1564,12 +1553,6 @@ a {
 
   .hero-motion {
     margin-top: clamp(5.5rem, 16vh, 8rem);
-  }
-
-  .hero-disciplines {
-    max-width: 18rem;
-    font-size: 0.62rem;
-    line-height: 1.55;
   }
 
   .brand-section-grid {

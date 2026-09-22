@@ -36,7 +36,6 @@ export function Hero({ content }: HeroProps) {
             {statement}
           </h1>
           <p className="hero-supporting">{content.hero.supporting}</p>
-          <p className="hero-disciplines">{content.hero.disciplines}</p>
         </div>
       </HeroMotion>
     </section>

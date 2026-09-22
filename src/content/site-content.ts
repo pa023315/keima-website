@@ -29,7 +29,6 @@ export type LocaleContent<L extends ContentLocale = ContentLocale> = {
   hero: {
     statement: ContentState<string>;
     supporting: string;
-    disciplines: string;
   };
   about: {
     eyebrow: string;
@@ -89,7 +88,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
     hero: {
       statement: ready("跨越既有路徑，連結新的可能。"),
       supporting: "Beyond the expected path.",
-      disciplines: "STRATEGY / PROJECTS / CONNECTIONS / DIGITAL",
     },
     about: {
       eyebrow: "Positioning",
@@ -195,7 +193,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
     hero: {
       statement: ready("Cross existing paths, connect new possibilities."),
       supporting: "Beyond the expected path.",
-      disciplines: "STRATEGY / PROJECTS / CONNECTIONS / DIGITAL",
     },
     about: {
       eyebrow: "Positioning",
