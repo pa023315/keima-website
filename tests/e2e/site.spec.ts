@@ -98,20 +98,31 @@ test("reduced motion keeps content visible", async ({ page }) => {
   await expect(page.locator("[data-reduced-motion='true']").first()).toBeVisible();
 });
 
-test("mobile project rows stay compact enough for a paced long-scroll section", async ({ page }) => {
+test("mobile project cards use a compact single-column image layout", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/zh-TW/");
 
-  const rowHeights = await page.locator(".project-row").evaluateAll((rows) =>
-    rows.map((row) => Math.round(row.getBoundingClientRect().height)),
-  );
-  const sectionHeight = await page
-    .locator("#in-motion")
-    .evaluate((section) => Math.round(section.getBoundingClientRect().height));
+  const cards = page.locator(".project-card");
+  const firstCard = cards.first();
+  const firstMedia = firstCard.locator(".project-media");
 
-  expect(rowHeights).toHaveLength(3);
-  expect(Math.max(...rowHeights)).toBeLessThanOrEqual(260);
-  expect(sectionHeight).toBeLessThanOrEqual(1500);
+  await expect(cards).toHaveCount(3);
+  await expect(firstMedia).toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>(".project-list")!;
+    const media = document.querySelector<HTMLElement>(".project-media")!;
+    const mediaBox = media.getBoundingClientRect();
+    return {
+      columns: getComputedStyle(list).gridTemplateColumns.split(" ").length,
+      mediaRatio: mediaBox.width / mediaBox.height,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+
+  expect(layout.columns).toBe(1);
+  expect(layout.mediaRatio).toBeGreaterThan(1.5);
+  expect(layout.overflow).toBeLessThanOrEqual(1);
 });
 
 test("desktop uses the restrained consultancy type hierarchy", async ({ page }) => {
@@ -138,33 +149,40 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
   expect(sizes.body).toBeGreaterThanOrEqual(17);
 });
 
-test("desktop approach and project rows share a readable grid system", async ({ page }) => {
+test("desktop separates project cards from the approach row system", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");
 
-  const styles = await page.evaluate(() => {
-    const read = (selector: string) =>
-      getComputedStyle(document.querySelector<HTMLElement>(selector)!);
-    const x = (selector: string) =>
-      document.querySelector<HTMLElement>(selector)!.getBoundingClientRect().x;
-    const approach = read(".approach-row .reveal-content");
-    const description = read(".row-description");
-
+  const layout = await page.evaluate(() => {
+    const projectList = document.querySelector<HTMLElement>(".project-list")!;
+    const cards = [...document.querySelectorAll<HTMLElement>(".project-card")];
+    const media = document.querySelector<HTMLElement>(".project-media")!.getBoundingClientRect();
     return {
-      approachPositions: [x(".approach-row h3"), x(".approach-row .row-label"), x(".row-description")],
-      projectPositions: [x(".project-title"), x(".project-label"), x(".project-description")],
-      approachPadding: Number.parseFloat(approach.paddingTop),
-      descriptionSize: Number.parseFloat(description.fontSize),
-      descriptionLineHeight: Number.parseFloat(description.lineHeight),
+      columns: getComputedStyle(projectList).gridTemplateColumns.split(" ").length,
+      cardTopPositions: cards.map((card) => Math.round(card.getBoundingClientRect().top)),
+      mediaRatio: media.width / media.height,
+      approachIsRows: getComputedStyle(
+        document.querySelector<HTMLElement>(".approach-row .reveal-content")!,
+      ).display,
     };
   });
 
-  styles.approachPositions.forEach((position, index) => {
-    expect(Math.abs(position - styles.projectPositions[index])).toBeLessThanOrEqual(1);
-  });
-  expect(styles.approachPadding).toBeLessThanOrEqual(30);
-  expect(styles.descriptionSize).toBeGreaterThanOrEqual(16);
-  expect(styles.descriptionLineHeight / styles.descriptionSize).toBeGreaterThanOrEqual(1.65);
+  expect(layout.columns).toBe(3);
+  expect(new Set(layout.cardTopPositions).size).toBe(1);
+  expect(layout.mediaRatio).toBeGreaterThan(1.3);
+  expect(layout.mediaRatio).toBeLessThan(1.36);
+  expect(layout.approachIsRows).toBe("grid");
+});
+
+test("tablet keeps project cards in a two-column grid", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 1000 });
+  await page.goto("/zh-TW/");
+
+  const columns = await page
+    .locator(".project-list")
+    .evaluate((list) => getComputedStyle(list).gridTemplateColumns.split(" ").length);
+
+  expect(columns).toBe(2);
 });
 
 test("tablet keeps positioning and profile as balanced two-column compositions", async ({ page }) => {
