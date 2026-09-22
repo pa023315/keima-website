@@ -23,7 +23,7 @@ export function createSiteMetadata(locale: Locale): Metadata {
   const isZh = locale === "zh-TW";
 
   return {
-    metadataBase: new URL("https://pa023315.com"),
+    metadataBase: new URL("https://keima.tw"),
     ...metadata,
     alternates: {
       canonical: `/${locale}/`,

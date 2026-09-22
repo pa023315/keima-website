@@ -6,7 +6,7 @@ import { cjk, latin } from "@/lib/fonts";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pa023315.com"),
+  metadataBase: new URL("https://keima.tw"),
   robots: {
     index: false,
     follow: false,
