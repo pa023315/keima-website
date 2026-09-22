@@ -25,9 +25,12 @@ for (const locale of locales) {
 test("business email is presented as a ready mail link", async ({ page }) => {
   await page.goto("/zh-TW/");
 
-  await expect(page.locator("#contact a[href='mailto:service@pa023315.com']")).toContainText(
-    "service@pa023315.com",
+  const emailLink = page.locator("#contact a[href='mailto:service@pa023315.com']");
+  await expect(emailLink).toContainText("service@pa023315.com");
+  const letterSpacing = await emailLink.evaluate((node) =>
+    Number.parseFloat(getComputedStyle(node).letterSpacing),
   );
+  expect(letterSpacing).toBeGreaterThan(-2);
 });
 
 test("mobile uses the standalone color symbol", async ({ page }) => {

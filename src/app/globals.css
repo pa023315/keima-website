@@ -1484,7 +1484,9 @@ a {
   gap: 0.65rem;
   color: var(--surface-light);
   font-size: clamp(1.35rem, 2.5vw, 3rem);
-  line-height: 1;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  white-space: nowrap;
 }
 
 .contact-email a span {
