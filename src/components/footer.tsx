@@ -1,16 +1,12 @@
 import Image from "next/image";
 
-import type { ContentState, LocaleContent, NavSectionId } from "@/content/site-content";
+import type { LocaleContent, NavSectionId } from "@/content/site-content";
 
 type FooterProps = {
   content: LocaleContent;
 };
 
 const footerSections = ["home", "about", "approach", "in-motion", "profile", "contact"] as const satisfies readonly NavSectionId[];
-
-function contentValue(state: ContentState<string>) {
-  return state.status === "ready" ? state.value : state.label;
-}
 
 export function Footer({ content }: FooterProps) {
   const navigationLabel = content.locale === "zh-TW" ? "頁尾導覽" : "Footer navigation";
@@ -37,15 +33,7 @@ export function Footer({ content }: FooterProps) {
         </ul>
       </nav>
 
-      <div className="footer-meta">
-        <p data-content-status={content.footer.social.status}>
-          {contentValue(content.footer.social)}
-        </p>
-        <p data-content-status={content.footer.copyright.status}>
-          {contentValue(content.footer.copyright)}
-        </p>
-        <p data-content-status={content.footer.legal.status}>{contentValue(content.footer.legal)}</p>
-      </div>
+      <p className="footer-copyright">{content.footer.copyright}</p>
     </footer>
   );
 }

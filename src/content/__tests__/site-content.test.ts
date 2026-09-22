@@ -62,22 +62,11 @@ describe("siteContent", () => {
     expect(zh.inMotion.projects.find((project) => project.id === "consulting")).toBeUndefined();
   });
 
-  it("marks only still-unprovided business facts as pending", () => {
+  it("provides the approved company copyright line in both locales", () => {
     for (const locale of Object.values(siteContent)) {
-      expect(locale.footer.social.status).toBe("pending");
-      expect(locale.footer.copyright.status).toBe("pending");
-      expect(locale.footer.legal.status).toBe("pending");
+      expect(locale.footer).toEqual({
+        copyright: "Copyright © 2026 桂馬數位股份有限公司 All Rights Reserved.",
+      });
     }
-  });
-
-  it("provides localized pending social labels", () => {
-    expect(siteContent["zh-TW"].footer.social).toEqual({
-      status: "pending",
-      label: "社群資訊待提供",
-    });
-    expect(siteContent.en.footer.social).toEqual({
-      status: "pending",
-      label: "Social information pending",
-    });
   });
 });

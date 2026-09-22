@@ -65,13 +65,10 @@ export type LocaleContent<L extends ContentLocale = ContentLocale> = {
     email: ContentState<string>;
   };
   footer: {
-    social: ContentState<string>;
-    copyright: ContentState<string>;
-    legal: ContentState<string>;
+    copyright: string;
   };
 };
 
-const pending = (label: string): ContentState<string> => ({ status: "pending", label });
 const ready = (value: string): ContentState<string> => ({ status: "ready", value });
 
 export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
@@ -175,9 +172,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
       email: ready("service@pa023315.com"),
     },
     footer: {
-      social: pending("社群資訊待提供"),
-      copyright: pending("版權資訊待提供"),
-      legal: pending("法律資訊待提供"),
+      copyright: "Copyright © 2026 桂馬數位股份有限公司 All Rights Reserved.",
     },
   },
   en: {
@@ -280,9 +275,7 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
       email: ready("service@pa023315.com"),
     },
     footer: {
-      social: pending("Social information pending"),
-      copyright: pending("Copyright information pending"),
-      legal: pending("Legal information pending"),
+      copyright: "Copyright © 2026 桂馬數位股份有限公司 All Rights Reserved.",
     },
   },
 };

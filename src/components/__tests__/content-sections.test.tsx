@@ -182,7 +182,7 @@ describe("Contact", () => {
 });
 
 describe("Footer", () => {
-  it("uses the official logo and shows localized navigation and pending information", () => {
+  it("uses the official logo, localized navigation, and approved copyright line", () => {
     render(<Footer content={zhContent} />);
 
     expect(screen.getByRole("img", { name: "KEIMA" })).toHaveAttribute(
@@ -206,10 +206,11 @@ describe("Footer", () => {
       );
     }
 
-    const social = screen.getByText("社群資訊待提供");
-    expect(social).toBeVisible();
-    expect(social.closest("a")).toBeNull();
-    expect(screen.getByText("版權資訊待提供")).toBeVisible();
-    expect(screen.getByText("法律資訊待提供")).toBeVisible();
+    expect(
+      screen.getByText("Copyright © 2026 桂馬數位股份有限公司 All Rights Reserved."),
+    ).toBeVisible();
+    expect(screen.queryByText("社群資訊待提供")).not.toBeInTheDocument();
+    expect(screen.queryByText("版權資訊待提供")).not.toBeInTheDocument();
+    expect(screen.queryByText("法律資訊待提供")).not.toBeInTheDocument();
   });
 });

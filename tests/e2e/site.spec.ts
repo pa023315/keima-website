@@ -33,6 +33,35 @@ test("business email is presented as a ready mail link", async ({ page }) => {
   expect(letterSpacing).toBeGreaterThan(-2);
 });
 
+test("footer ends with the approved full-width copyright row", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const footer = page.locator(".site-footer");
+  const brand = footer.locator(".footer-brand");
+  const navigation = footer.locator(".footer-navigation");
+  const copyright = footer.locator(".footer-copyright");
+
+  await footer.scrollIntoViewIfNeeded();
+  await expect(copyright).toHaveText(
+    "Copyright © 2026 桂馬數位股份有限公司 All Rights Reserved.",
+  );
+  await expect(footer.getByText("社群資訊待提供")).toHaveCount(0);
+  await expect(footer.getByText("版權資訊待提供")).toHaveCount(0);
+  await expect(footer.getByText("法律資訊待提供")).toHaveCount(0);
+
+  const brandBox = await brand.boundingBox();
+  const navigationBox = await navigation.boundingBox();
+  const copyrightBox = await copyright.boundingBox();
+
+  expect(brandBox).not.toBeNull();
+  expect(navigationBox).not.toBeNull();
+  expect(copyrightBox).not.toBeNull();
+  expect(copyrightBox!.y).toBeGreaterThan(brandBox!.y + brandBox!.height);
+  expect(copyrightBox!.y).toBeGreaterThan(navigationBox!.y + navigationBox!.height);
+  expect(copyrightBox!.width).toBeGreaterThan(1000);
+});
+
 test("mobile uses the standalone color symbol", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/zh-TW/");
