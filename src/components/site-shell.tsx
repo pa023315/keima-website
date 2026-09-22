@@ -5,7 +5,6 @@ import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Navigation } from "@/components/navigation";
-import { Philosophy } from "@/components/philosophy";
 import { Profile } from "@/components/profile";
 import { ProjectList } from "@/components/project-list";
 
@@ -27,7 +26,6 @@ export function SiteShell({ content }: SiteShellProps) {
         <About content={content} />
         <Approach content={content} />
         <ProjectList content={content} />
-        <Philosophy content={content} />
         <Profile content={content} />
         <Contact content={content} />
       </main>

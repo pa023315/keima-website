@@ -12,9 +12,10 @@ for (const locale of locales) {
     await page.goto(`/${locale}/`);
 
     await expect(page.locator("header img")).toBeVisible();
-    for (const id of ["home", "about", "approach", "in-motion", "philosophy", "profile", "contact"]) {
+    for (const id of ["home", "about", "approach", "in-motion", "profile", "contact"]) {
       await expect(page.locator(`#${id}`)).toBeVisible();
     }
+    await expect(page.locator("#philosophy")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "HOW WE MOVE" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "CURRENTLY IN MOTION" })).toBeVisible();
     expect(errors).toEqual([]);
@@ -135,7 +136,6 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
 
     return {
       positioning: px(".positioning-display"),
-      philosophy: px(".philosophy-display"),
       profileName: px(".profile-card h3"),
       contact: px(".contact-title"),
       body: px(".positioning-copy p"),
@@ -143,7 +143,6 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
   });
 
   expect(sizes.positioning).toBeLessThanOrEqual(96);
-  expect(sizes.philosophy).toBeLessThanOrEqual(100);
   expect(sizes.profileName).toBeLessThanOrEqual(72);
   expect(sizes.contact).toBeLessThanOrEqual(104);
   expect(sizes.body).toBeGreaterThanOrEqual(17);
