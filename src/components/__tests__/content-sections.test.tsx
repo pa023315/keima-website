@@ -6,7 +6,6 @@ import { Approach } from "@/components/approach";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
-import { Philosophy } from "@/components/philosophy";
 import { Profile } from "@/components/profile";
 import { ProjectList } from "@/components/project-list";
 import { siteContent, type LocaleContent } from "@/content/site-content";
@@ -136,20 +135,6 @@ describe("ProjectList", () => {
     expect(section.querySelector(".project-card--gamecf .project-media")).toBeInTheDocument();
     expect(within(section).queryByText("CREATOR ERP")).not.toBeInTheDocument();
     expect(within(section).queryByText("CONSULTING")).not.toBeInTheDocument();
-  });
-});
-
-describe("Philosophy", () => {
-  it("renders the straight-line philosophy as a text-only brand moment", () => {
-    render(<Philosophy content={zhContent} />);
-
-    const section = screen.getByRole("region", { name: "Not every good move is a straight line" });
-    expect(within(section).getByRole("heading", { name: /NOT EVERY/ })).toHaveClass(
-      "philosophy-display",
-    );
-    expect(
-      within(section).getByText("不是每一個好的選擇，都必須沿著既有路徑前進。"),
-    ).toBeVisible();
   });
 });
 

@@ -1107,7 +1107,6 @@ a {
 .positioning-index,
 .approach-index,
 .in-motion-index,
-.philosophy-index,
 .profile-index {
   grid-column: 1;
 }
@@ -1118,8 +1117,7 @@ a {
 
 .positioning-display,
 .approach-title,
-.in-motion-title,
-.philosophy-display {
+.in-motion-title {
   margin: 0;
   white-space: pre-line;
   text-wrap: balance;
@@ -1393,51 +1391,6 @@ a {
   color: var(--text-muted);
 }
 
-.philosophy {
-  overflow: hidden;
-  background: var(--keima-ink);
-  color: var(--surface-light);
-}
-
-.philosophy .section-index span {
-  color: var(--keima-ink);
-}
-
-.philosophy-copy {
-  grid-column: 2 / 9;
-}
-
-.philosophy-display {
-  max-width: 12ch;
-  color: var(--surface-light);
-  font-size: var(--type-display-lg);
-  font-weight: 620;
-  letter-spacing: -0.055em;
-  line-height: 0.92;
-}
-
-.philosophy-copy p:not(.section-kicker) {
-  max-width: 34rem;
-  margin: clamp(2rem, 4vw, 4rem) 0 0;
-  color: var(--border-primary);
-  font-size: clamp(1.1rem, 1.5vw, 1.55rem);
-  font-weight: 750;
-  line-height: 1.65;
-}
-
-.philosophy-symbol {
-  grid-column: 10 / 12;
-  align-self: end;
-  justify-self: end;
-  opacity: 0.92;
-}
-
-.philosophy-symbol img {
-  display: block;
-  width: clamp(5rem, 9vw, 9rem);
-  height: auto;
-}
-
 .profile-heading {
   grid-column: 2 / 5;
 }
@@ -1559,14 +1512,12 @@ a {
   .positioning-index,
   .approach-index,
   .in-motion-index,
-  .philosophy-index,
   .profile-index,
   .section-heading-block,
   .positioning .section-heading-block,
   .positioning-copy,
   .approach-list,
   .project-list,
-  .philosophy-copy,
   .profile-heading,
   .profile-card {
     grid-column: 1 / -1;
@@ -1637,8 +1588,7 @@ a {
     margin-top: 0.5rem;
   }
 
-  .positioning-display,
-  .philosophy-display {
+  .positioning-display {
     font-size: clamp(2.75rem, 13vw, 3.5rem);
     line-height: 0.95;
   }
@@ -1697,11 +1647,6 @@ a {
 
   .project-description {
     font-size: 1rem;
-  }
-
-  .philosophy-symbol {
-    grid-column: 1 / -1;
-    justify-self: start;
   }
 
   .contact-title,

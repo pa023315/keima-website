@@ -50,11 +50,6 @@ export type LocaleContent<L extends ContentLocale = ContentLocale> = {
     intro: string;
     projects: ProjectContent[];
   };
-  philosophy: {
-    label: string;
-    display: string;
-    body: string;
-  };
   profile: {
     label: string;
     title: string;
@@ -163,11 +158,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
         },
       ],
     },
-    philosophy: {
-      label: "Not every good move is a straight line",
-      display: "NOT EVERY\nGOOD MOVE\nIS A STRAIGHT\nLINE.",
-      body: "不是每一個好的選擇，都必須沿著既有路徑前進。",
-    },
     profile: {
       label: "Who is behind KEIMA",
       title: "Who is behind KEIMA",
@@ -273,11 +263,6 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
           url: ready("https://gamecf.tw/"),
         },
       ],
-    },
-    philosophy: {
-      label: "Not every good move is a straight line",
-      display: "NOT EVERY\nGOOD MOVE\nIS A STRAIGHT\nLINE.",
-      body: "Not every good move has to follow the expected path.",
     },
     profile: {
       label: "Who is behind KEIMA",
