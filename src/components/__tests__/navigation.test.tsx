@@ -80,10 +80,10 @@ describe("Navigation", () => {
     const primaryNavigation = screen.getByRole("navigation", { name: "主要導覽" });
     const expectedLinks = [
       ["首頁", "#home"],
-      ["About", "#about"],
-      ["Approach", "#approach"],
-      ["In Motion", "#in-motion"],
-      ["Profile", "#profile"],
+      ["關於桂馬", "#about"],
+      ["合作方式", "#approach"],
+      ["進行中專案", "#in-motion"],
+      ["顧問介紹", "#profile"],
       ["聯繫", "#contact"],
     ] as const;
 
@@ -112,7 +112,7 @@ describe("Navigation", () => {
       );
     });
 
-    expect(screen.getByRole("link", { name: "In Motion" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "進行中專案" })).toHaveAttribute(
       "aria-current",
       "location",
     );

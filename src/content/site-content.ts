@@ -76,10 +76,10 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
     locale: "zh-TW",
     nav: {
       home: "首頁",
-      about: "About",
-      approach: "Approach",
-      "in-motion": "In Motion",
-      profile: "Profile",
+      about: "關於桂馬",
+      approach: "合作方式",
+      "in-motion": "進行中專案",
+      profile: "顧問介紹",
       contact: "聯繫",
     },
     hero: {

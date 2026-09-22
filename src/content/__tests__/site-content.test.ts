@@ -34,10 +34,10 @@ describe("siteContent", () => {
     expect(zh.hero.supporting).toBe("Beyond the expected path.");
     expect(zh.nav).toEqual({
       home: "首頁",
-      about: "About",
-      approach: "Approach",
-      "in-motion": "In Motion",
-      profile: "Profile",
+      about: "關於桂馬",
+      approach: "合作方式",
+      "in-motion": "進行中專案",
+      profile: "顧問介紹",
       contact: "聯繫",
     });
     expect(zh.about.display).toBe("WE CONNECT\nIDEAS,\nPEOPLE\nAND\nPOSSIBILITIES.");
