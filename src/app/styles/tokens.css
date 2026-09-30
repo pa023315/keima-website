@@ -1,0 +1,23 @@
+:root {
+  --ink: #11110e;
+  --paper: #f2f0e8;
+  --paper-deep: #e4e1d7;
+  --paper-light: #faf8f1;
+  --cyan: #2eb8c6;
+  --cyan-dark: #168896;
+  --muted: #747168;
+  --hairline: color-mix(in srgb, var(--ink) 18%, transparent);
+  --hairline-light: color-mix(in srgb, var(--paper) 22%, transparent);
+  --page-gutter: clamp(1.25rem, 4vw, 4.75rem);
+  --section-block: clamp(7rem, 12vw, 12rem);
+  --grid-gap: clamp(1rem, 2vw, 2rem);
+  --display-hero: clamp(5.2rem, 13vw, 13.5rem);
+  --display-section: clamp(3.6rem, 8.2vw, 8.4rem);
+  --display-card: clamp(2.35rem, 4vw, 4.5rem);
+  --body-lg: clamp(1.125rem, 1.55vw, 1.45rem);
+  --body: clamp(1rem, 1.1vw, 1.125rem);
+  --label: 0.75rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --header-height: 5rem;
+  --max-width: 120rem;
+}

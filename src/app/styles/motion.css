@@ -1,0 +1,75 @@
+.hero-reveal--logo { animation: hero-logo-in 1.2s var(--ease-out) both; }
+.hero-reveal--subtitle { animation: hero-copy-in 1s 180ms var(--ease-out) both; }
+.hero-supporting { animation: hero-copy-in 1s 280ms var(--ease-out) both; }
+
+@keyframes hero-logo-in {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); translate: -2rem 0; }
+  to { opacity: 1; clip-path: inset(0); translate: 0; }
+}
+
+@keyframes hero-copy-in {
+  from { opacity: 0; translate: 0 1.5rem; }
+  to { opacity: 1; translate: 0; }
+}
+
+.reveal { position: relative; }
+.reveal-content { will-change: transform, opacity, clip-path; }
+
+.project-card-link .project-media,
+.project-card-link .project-art,
+.project-card-link .project-arrow {
+  transition: transform 700ms var(--ease-out), background-color 500ms var(--ease-out), color 300ms var(--ease-out);
+}
+
+.project-card-link:hover .project-media { transform: translateY(-0.55rem); }
+.project-card-link:hover .project-art { transform: scale(1.035) rotate(0.01deg); }
+.project-card-link:hover .project-arrow { color: var(--cyan); transform: translate(0.35rem, -0.35rem); }
+
+.project-art { position: absolute; inset: 0; overflow: hidden; }
+.project-art span { position: absolute; display: block; }
+
+.project-art--jobsgame .project-art-plane { right: -14%; bottom: -24%; width: 90%; height: 72%; background: var(--ink); transform: rotate(-24deg); }
+.project-art--jobsgame .project-art-orbit { top: 18%; left: 14%; width: 38%; aspect-ratio: 1; border: 0.85rem solid var(--cyan); transform: rotate(18deg); }
+.project-art--jobsgame .project-art-node { top: 27%; right: 18%; width: 1.2rem; aspect-ratio: 1; background: var(--ink); }
+
+.project-art--indie-guider { background: var(--ink); }
+.project-art--indie-guider .project-art-plane { top: -8%; left: 15%; width: 1.5rem; height: 120%; background: var(--cyan); transform: rotate(34deg); }
+.project-art--indie-guider .project-art-orbit { right: 12%; bottom: 10%; width: 62%; aspect-ratio: 1; border: clamp(2.5rem, 5vw, 5.5rem) solid var(--paper); border-left-color: transparent; border-radius: 50%; transform: rotate(-28deg); }
+.project-art--indie-guider .project-art-node { top: 17%; left: 13%; width: 18%; aspect-ratio: 1; border: 0.7rem solid var(--paper); transform: rotate(45deg); }
+
+.project-art--gamecf { background: linear-gradient(135deg, var(--paper-deep) 0 50%, var(--cyan) 50%); }
+.project-art--gamecf .project-art-plane { inset: 18% 11%; border: 1px solid var(--ink); }
+.project-art--gamecf .project-art-orbit { top: 24%; left: 18%; width: 62%; height: 2px; background: var(--ink); transform: rotate(-25deg); box-shadow: 0 4rem 0 var(--ink), 0 8rem 0 var(--ink); }
+.project-art--gamecf .project-art-node { right: 15%; bottom: 13%; width: 30%; aspect-ratio: 1; background: var(--ink); clip-path: polygon(0 0, 100% 0, 100% 100%, 44% 100%, 44% 44%, 0 44%); }
+
+.section-wipe::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: var(--cyan);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.section-wipe > * { position: relative; z-index: 1; }
+
+.route-progress {
+  position: fixed;
+  z-index: 90;
+  top: calc(var(--header-height) + 1rem);
+  right: 0.7rem;
+  bottom: 1rem;
+  width: 2px;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  pointer-events: none;
+}
+
+.route-progress span { display: block; width: 100%; height: 100%; background: var(--cyan); transform-origin: top; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal--logo,
+  .hero-reveal--subtitle,
+  .hero-supporting { animation: none; }
+  .route-progress { display: none; }
+}
