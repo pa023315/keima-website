@@ -3,6 +3,7 @@ export type ContentState<T> =
   | { status: "pending"; label: string };
 
 export type ContentLocale = "zh-TW" | "en";
+export type ProjectId = "jobsgame" | "indie-guider" | "gamecf";
 
 export type NavSectionId = "home" | "about" | "approach" | "in-motion" | "profile" | "contact";
 
@@ -15,7 +16,7 @@ export type ApproachItem = {
 };
 
 export type ProjectContent = {
-  id: string;
+  id: ProjectId;
   index: string;
   title: string;
   label: string;

@@ -28,7 +28,7 @@
 .project-art { position: absolute; inset: 0; overflow: hidden; }
 .project-art span { position: absolute; display: block; }
 
-.project-art--jobsgame .project-art-plane { right: -14%; bottom: -24%; width: 90%; height: 72%; background: var(--ink); transform: rotate(-24deg); }
+.project-art--jobsgame .project-art-plane { right: 0; bottom: -18%; width: 78%; height: 68%; background: var(--ink); transform: rotate(-24deg); transform-origin: bottom right; }
 .project-art--jobsgame .project-art-orbit { top: 18%; left: 14%; width: 38%; aspect-ratio: 1; border: 0.85rem solid var(--cyan); transform: rotate(18deg); }
 .project-art--jobsgame .project-art-node { top: 27%; right: 18%; width: 1.2rem; aspect-ratio: 1; background: var(--ink); }
 

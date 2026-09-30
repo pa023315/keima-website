@@ -120,6 +120,7 @@ describe("ProjectList", () => {
 
     expect(cards).toHaveLength(3);
     expect(media).toHaveLength(3);
+    expect(section.querySelectorAll(".project-art")).toHaveLength(3);
     expect(section.querySelector(".project-row")).not.toBeInTheDocument();
     expect(within(section).getByRole("link", { name: /JOBSGAME/ })).toHaveAttribute(
       "href",

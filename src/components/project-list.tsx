@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/reveal";
+import { ProjectArt } from "@/components/project-art";
 import type { LocaleContent, ProjectContent } from "@/content/site-content";
 
 type ProjectListProps = {
@@ -21,8 +22,7 @@ function ProjectCard({ project, index }: { project: ProjectContent; index: numbe
   const cardContent = (
     <>
       <div className="project-media" aria-hidden="true">
-        <span className="project-media-shape project-media-shape--primary" />
-        <span className="project-media-shape project-media-shape--secondary" />
+        <ProjectArt project={project.id} />
         <span className="project-media-marker">
           {project.index} / {project.title}
         </span>
@@ -44,6 +44,7 @@ function ProjectCard({ project, index }: { project: ProjectContent; index: numbe
     <li
       className={`project-card project-card--${project.id}`}
       data-link-state={href ? "ready" : "pending"}
+      data-project-position={index % 2 === 0 ? "leading" : "trailing"}
     >
       <Reveal delay={index * 0.08}>
         {href ? (

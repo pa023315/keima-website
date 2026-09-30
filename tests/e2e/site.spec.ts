@@ -211,7 +211,7 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
   expect(sizes.body).toBeGreaterThanOrEqual(17);
 });
 
-test("desktop separates project cards from the approach row system", async ({ page }) => {
+test("desktop separates editorial project features from the approach row system", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");
 
@@ -222,6 +222,7 @@ test("desktop separates project cards from the approach row system", async ({ pa
     return {
       columns: getComputedStyle(projectList).gridTemplateColumns.split(" ").length,
       cardTopPositions: cards.map((card) => Math.round(card.getBoundingClientRect().top)),
+      positions: cards.map((card) => card.dataset.projectPosition),
       mediaRatio: media.width / media.height,
       approachIsRows: getComputedStyle(
         document.querySelector<HTMLElement>(".approach-row .reveal-content")!,
@@ -229,14 +230,14 @@ test("desktop separates project cards from the approach row system", async ({ pa
     };
   });
 
-  expect(layout.columns).toBe(3);
-  expect(new Set(layout.cardTopPositions).size).toBe(1);
+  expect(layout.columns).toBe(1);
+  expect(new Set(layout.cardTopPositions).size).toBe(3);
+  expect(layout.positions).toEqual(["leading", "trailing", "leading"]);
   expect(layout.mediaRatio).toBeGreaterThan(1.3);
-  expect(layout.mediaRatio).toBeLessThan(1.36);
   expect(layout.approachIsRows).toBe("grid");
 });
 
-test("tablet keeps project cards in a two-column grid", async ({ page }) => {
+test("tablet keeps project features in a readable single-column sequence", async ({ page }) => {
   await page.setViewportSize({ width: 900, height: 1000 });
   await page.goto("/zh-TW/");
 
@@ -244,7 +245,7 @@ test("tablet keeps project cards in a two-column grid", async ({ page }) => {
     .locator(".project-list")
     .evaluate((list) => getComputedStyle(list).gridTemplateColumns.split(" ").length);
 
-  expect(columns).toBe(2);
+  expect(columns).toBe(1);
 });
 
 test("tablet keeps positioning and profile as balanced two-column compositions", async ({ page }) => {
@@ -256,12 +257,12 @@ test("tablet keeps positioning and profile as balanced two-column compositions",
       document.querySelector<HTMLElement>(selector)!.getBoundingClientRect();
     const aboutHeading = box(".positioning .section-heading-block");
     const aboutCopy = box(".positioning-copy");
-    const profileHeading = box(".profile-heading");
+    const profilePortrait = box(".profile-portrait");
     const profileCard = box(".profile-card");
 
     return {
       about: [aboutHeading.x, aboutCopy.x, Math.abs(aboutHeading.y - aboutCopy.y)],
-      profile: [profileHeading.x, profileCard.x, Math.abs(profileHeading.y - profileCard.y)],
+      profile: [profilePortrait.x, profileCard.x, Math.abs(profilePortrait.y - profileCard.y)],
     };
   });
 

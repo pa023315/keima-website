@@ -58,8 +58,10 @@ describe("siteContent", () => {
       status: "ready",
       value: "https://gamecf.tw/",
     });
-    expect(zh.inMotion.projects.find((project) => project.id === "creator-erp")).toBeUndefined();
-    expect(zh.inMotion.projects.find((project) => project.id === "consulting")).toBeUndefined();
+    const projectIds: readonly string[] = zh.inMotion.projects.map((project) => project.id);
+    expect(projectIds).toEqual(["jobsgame", "indie-guider", "gamecf"]);
+    expect(projectIds).not.toContain("creator-erp");
+    expect(projectIds).not.toContain("consulting");
   });
 
   it("provides the approved company copyright line in both locales", () => {

@@ -90,12 +90,11 @@
 .positioning { border-top: 1px solid var(--hairline); }
 
 .positioning .section-heading-block {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.7fr);
-  gap: clamp(3rem, 7vw, 8rem);
+  display: block;
+  grid-column: 2 / 8;
 }
 
-.positioning .section-kicker { grid-column: 1 / -1; margin-bottom: 0; }
+.positioning .section-kicker { margin-bottom: 2.5rem; }
 .positioning-statement { min-width: 0; }
 
 .positioning-display {
@@ -109,10 +108,11 @@
 
 .positioning-copy {
   grid-column: 8 / -1;
+  grid-row: 1;
   margin-top: clamp(3rem, 6vw, 7rem);
   padding-top: 1.5rem;
   border-top: 1px solid var(--hairline);
-  align-self: end;
+  align-self: start;
 }
 
 .positioning-copy p {
@@ -157,6 +157,11 @@
 }
 
 .approach-row { position: relative; border-bottom: 1px solid var(--hairline); }
+.approach-row .reveal,
+.approach-row .reveal-content,
+.approach-row h3,
+.row-label,
+.row-description { min-width: 0; }
 .approach-row .reveal-content {
   display: grid;
   min-height: 10.5rem;
