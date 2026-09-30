@@ -77,6 +77,7 @@ describe("About", () => {
     expect(within(about).getByRole("heading", { name: /WE CONNECT/ })).toHaveClass(
       "positioning-display",
     );
+    expect(about.querySelector(".positioning-statement")).toBeInTheDocument();
     expect(
       within(about).getByText(
         "桂馬數位以策略與專案為核心，串連創作者、內容、產業與數位工具，將分散的想法整理成可以真正執行的方向。",
@@ -99,6 +100,8 @@ describe("Approach", () => {
     const rows = section.querySelectorAll(".approach-row");
 
     expect(rows).toHaveLength(3);
+    expect(section.querySelectorAll(".approach-node")).toHaveLength(3);
+    expect(section.querySelector(".approach-path")).toHaveAttribute("aria-hidden", "true");
     expect(within(section).getByRole("heading", { name: "STRATEGY" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "PROJECTS" })).toBeVisible();
     expect(within(section).getByRole("heading", { name: "CONNECTIONS" })).toBeVisible();

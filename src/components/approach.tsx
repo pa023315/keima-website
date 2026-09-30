@@ -25,10 +25,18 @@ export function Approach({ content }: ApproachProps) {
           </h2>
           <p className="section-intro">{approach.intro}</p>
         </div>
+        <div className="approach-path" aria-hidden="true">
+          <span />
+        </div>
         <ol className="approach-list">
           {approach.items.map((item, index) => (
-            <li key={item.id} className="approach-row" data-motion-accent="knight-row">
-              <Reveal delay={index * 0.06}>
+            <li
+              key={item.id}
+              className="approach-row approach-node"
+              data-motion-accent="knight-row"
+              data-step={item.index}
+            >
+              <Reveal variant="rise" delay={index * 0.06}>
                 <span className="row-index" aria-hidden="true">
                   {item.index}
                 </span>

@@ -20,11 +20,13 @@ export function About({ content }: AboutProps) {
         </p>
         <div className="section-heading-block">
           <p className="section-kicker">{about.eyebrow}</p>
-          <Reveal>
-            <h2 id="about-title" className="positioning-display">
-              {about.display}
-            </h2>
-          </Reveal>
+          <div className="positioning-statement">
+            <Reveal variant="clip">
+              <h2 id="about-title" className="positioning-display">
+                {about.display}
+              </h2>
+            </Reveal>
+          </div>
         </div>
         <div className="positioning-copy">
           <p>{about.intro}</p>

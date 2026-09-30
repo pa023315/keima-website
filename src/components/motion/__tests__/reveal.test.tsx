@@ -108,7 +108,7 @@ describe("Reveal", () => {
     expect(motionState.calls.at(-1)?.style).toBeUndefined();
   });
 
-  it("arms offscreen, then reveals once with enhanced displacement, blur, duration, and easing", () => {
+  it("arms offscreen, then reveals once with restrained displacement and easing", () => {
     render(
       <Reveal delay={0.12}>
         <span>Animated content</span>
@@ -130,7 +130,7 @@ describe("Reveal", () => {
     );
     expect(motionState.calls.at(-1)).toEqual(
       expect.objectContaining({
-        animate: { opacity: 0, y: 56, clipPath: "inset(0 0 112% 0)", filter: "blur(10px)" },
+        animate: { opacity: 0, y: 32, clipPath: "inset(0 0 0% 0)" },
         whileInView: undefined,
       }),
     );
@@ -142,8 +142,20 @@ describe("Reveal", () => {
       opacity: 1,
       y: 0,
       clipPath: "inset(0 0 0% 0)",
-      filter: "blur(0px)",
     });
+  });
+
+  it("exposes the clip variant for editorial headings", () => {
+    render(
+      <Reveal variant="clip">
+        <span>Editorial heading</span>
+      </Reveal>,
+    );
+
+    expect(screen.getByText("Editorial heading").closest(".reveal")).toHaveAttribute(
+      "data-reveal-variant",
+      "clip",
+    );
   });
 
   it("honors the browser media query when Motion still has its hydration fallback", async () => {
@@ -190,7 +202,6 @@ describe("Reveal", () => {
       opacity: 1,
       y: 0,
       clipPath: "inset(0 0 0% 0)",
-      filter: "blur(0px)",
     });
     vi.useRealTimers();
   });

@@ -9,18 +9,17 @@ type RevealProps = {
   children: ReactNode;
   className?: string;
   delay?: number;
+  variant?: "clip" | "rise";
 };
 
 const revealEase = [0.16, 1, 0.3, 1] as const;
-const hiddenState = {
-  opacity: 0,
-  y: 56,
-  clipPath: "inset(0 0 112% 0)",
-  filter: "blur(10px)",
-};
-const revealedState = { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)", filter: "blur(0px)" };
+const hiddenStates = {
+  clip: { opacity: 0, y: 0, clipPath: "inset(0 0 112% 0)" },
+  rise: { opacity: 0, y: 32, clipPath: "inset(0 0 0% 0)" },
+} as const;
+const revealedState = { opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" };
 
-export function Reveal({ children, className, delay = 0 }: RevealProps) {
+export function Reveal({ children, className, delay = 0, variant = "rise" }: RevealProps) {
   const target = useRef<HTMLDivElement>(null);
   const reducedMotion = useKeimaReducedMotion();
   const [motionReady, setMotionReady] = useState(false);
@@ -44,7 +43,7 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
     return () => observer.disconnect();
   }, [reducedMotion]);
 
-  const revealState = !motionReady || reducedMotion ? undefined : inView ? revealedState : hiddenState;
+  const revealState = !motionReady || reducedMotion ? undefined : inView ? revealedState : hiddenStates[variant];
   const revealStatus = !motionReady ? "unarmed" : inView ? "visible" : "hidden";
 
   return (
@@ -54,6 +53,7 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
       data-motion-ready={String(motionReady)}
       data-reduced-motion={String(reducedMotion)}
       data-reveal-state={revealStatus}
+      data-reveal-variant={variant}
     >
       <motion.div
         className="reveal-content"
