@@ -129,8 +129,7 @@
   .contact-title { margin-top: 0.5rem; }
   .contact-body { margin-top: 1.5rem; }
   .contact-email { margin-top: 4rem; }
-  .contact-cta-label,
-  .contact-email a { font-size: clamp(2.45rem, 12.5vw, 4.5rem); letter-spacing: 0.01em; word-spacing: 0.05em; }
+  .contact-cta-label { font-size: clamp(2.45rem, 12.5vw, 4.5rem); letter-spacing: 0.01em; word-spacing: 0.05em; }
   .contact-email a > span:last-child,
   .contact-email-address { font-size: 1rem; overflow-wrap: anywhere; }
 

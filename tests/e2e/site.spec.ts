@@ -27,7 +27,7 @@ test("business email is presented as a ready mail link", async ({ page }) => {
 
   const emailLink = page.locator("#contact a[href='mailto:service@pa023315.com']");
   await expect(emailLink).toContainText("service@pa023315.com");
-  const letterSpacing = await emailLink.evaluate((node) =>
+  const letterSpacing = await emailLink.locator(".contact-cta-label").evaluate((node) =>
     Number.parseFloat(getComputedStyle(node).letterSpacing),
   );
   expect(letterSpacing).toBeGreaterThan(-2);
@@ -69,6 +69,34 @@ test("footer ends with the approved full-width copyright row", async ({ page }) 
   expect(copyrightBox!.y).toBeGreaterThan(brandBox!.y + brandBox!.height);
   expect(copyrightBox!.y).toBeGreaterThan(navigationBox!.y + navigationBox!.height);
   expect(copyrightBox!.width).toBeGreaterThan(1000);
+});
+
+test("profile contact and footer keep the approved editorial proportions", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const portrait = await page.locator(".profile-portrait").boundingBox();
+  const profileCard = await page.locator(".profile-card").boundingBox();
+  const role = await page.locator(".profile-role").boundingBox();
+  const name = await page.locator(".profile-name").boundingBox();
+  const ctaSpacing = await page.locator(".contact-cta-label").evaluate((node) =>
+    Number.parseFloat(getComputedStyle(node).letterSpacing),
+  );
+  const footerMetrics = await page.locator(".site-footer").evaluate((footer) => ({
+    height: footer.getBoundingClientRect().height,
+    logoWidth: footer.querySelector("img")!.getBoundingClientRect().width,
+  }));
+
+  expect(portrait).not.toBeNull();
+  expect(profileCard).not.toBeNull();
+  expect(role).not.toBeNull();
+  expect(name).not.toBeNull();
+  expect(portrait!.x).toBeLessThan(profileCard!.x);
+  expect(Math.abs(portrait!.y - profileCard!.y)).toBeLessThan(140);
+  expect(name!.y).toBeGreaterThan(role!.y + role!.height);
+  expect(ctaSpacing).toBeGreaterThan(-1.5);
+  expect(footerMetrics.height).toBeLessThan(280);
+  expect(footerMetrics.logoWidth).toBeGreaterThanOrEqual(170);
 });
 
 test("mobile uses the standalone color symbol", async ({ page }) => {

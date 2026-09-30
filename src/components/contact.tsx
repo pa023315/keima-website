@@ -28,8 +28,8 @@ export function Contact({ content }: ContactProps) {
         <p className="contact-email" data-content-status={contact.email.status}>
           {contact.email.status === "ready" ? (
             <a href={`mailto:${email}`} aria-label={`${contact.cta} ${email}`}>
-              {contact.cta}
-              <span>{email}</span>
+              <span className="contact-cta-label">{contact.cta}</span>
+              <span className="contact-email-address">{email}</span>
             </a>
           ) : (
             email
