@@ -201,7 +201,7 @@ describe("Footer", () => {
 
     expect(screen.getByRole("img", { name: "KEIMA" })).toHaveAttribute(
       "src",
-      "/brand/keima-lockup.svg",
+      "/brand/keima-lockup-color.svg",
     );
     const footerNavigation = screen.getByRole("navigation", { name: "頁尾導覽" });
     const expectedLinks = [

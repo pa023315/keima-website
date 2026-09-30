@@ -15,7 +15,7 @@ export function Footer({ content }: FooterProps) {
     <footer className="site-footer">
       <div className="footer-brand">
         <Image
-          src="/brand/keima-lockup.svg"
+          src="/brand/keima-lockup-color.svg"
           alt="KEIMA"
           width="180"
           height="36"

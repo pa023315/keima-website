@@ -12,8 +12,8 @@
   .positioning .section-heading-block { grid-column: 2 / 7; }
   .positioning-copy { grid-column: 7 / -1; }
 
-  .approach .section-heading-block { grid-column: 2 / 7; }
-  .approach-list { grid-column: 7 / -1; }
+  .approach .section-heading-block { grid-column: 2 / 6; }
+  .approach-list { grid-column: 6 / -1; }
   .approach-row .reveal-content { grid-template-columns: 2.4rem 1fr; }
   .row-description { grid-column: 2; grid-row: auto; }
 
@@ -98,10 +98,11 @@
   .approach-path { left: calc(var(--page-gutter) + 1.25rem); }
   .approach-list { grid-column: 2; margin-top: 4rem; }
   .approach-row .reveal-content { min-height: 0; padding: 1.5rem 0 2rem; grid-template-columns: 2.25rem 1fr; }
-  .approach-row h3 { max-width: 100%; font-size: clamp(2rem, 10.5vw, 3.2rem); }
+  .approach-row h3 { max-width: 100%; font-size: clamp(1.9rem, 8.5vw, 2.65rem); }
   .row-description { margin-top: 1rem; }
 
   .in-motion .section-heading-block { grid-column: 2; }
+  .in-motion-title { font-size: clamp(3rem, 13vw, 4.75rem); }
   .project-list { grid-column: 2; margin-top: 4rem; gap: 5.5rem; }
   .project-card-link,
   .project-card[data-project-position="trailing"] .project-card-link { display: flex; min-height: 0; flex-direction: column; gap: 1.5rem; }
@@ -129,7 +130,7 @@
   .contact-title { margin-top: 0.5rem; }
   .contact-body { margin-top: 1.5rem; }
   .contact-email { margin-top: 4rem; }
-  .contact-cta-label { font-size: clamp(2.45rem, 12.5vw, 4.5rem); letter-spacing: 0.01em; word-spacing: 0.05em; }
+  .contact-cta-label { font-size: clamp(2.15rem, 9.5vw, 3rem); letter-spacing: 0.01em; word-spacing: 0.05em; }
   .contact-email a > span:last-child,
   .contact-email-address { font-size: 1rem; overflow-wrap: anywhere; }
 
@@ -139,7 +140,8 @@
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  .footer-brand img { width: 11rem; }
+  .footer-brand { padding: 0.7rem 0.85rem; }
+  .footer-brand img { width: 11.5rem; }
   .footer-navigation ul { display: grid; grid-template-columns: repeat(2, 1fr); justify-content: start; gap: 0.8rem 1.5rem; }
   .footer-copyright { grid-column: 1; line-height: 1.55; }
   .route-progress { display: none; }
