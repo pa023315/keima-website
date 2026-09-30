@@ -187,7 +187,8 @@ test("reduced motion keeps content visible", async ({ page }) => {
   await page.goto("/zh-TW/");
 
   await expect(page.locator("#contact")).toBeVisible();
-  await expect(page.locator("[data-reduced-motion='true']").first()).toBeVisible();
+  await expect(page.locator(".reveal[data-reduced-motion='true']").first()).toBeVisible();
+  await expect(page.getByTestId("route-progress")).toBeHidden();
 });
 
 test("mobile project cards use a compact single-column image layout", async ({ page }) => {

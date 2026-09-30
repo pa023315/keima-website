@@ -4,6 +4,7 @@ import { Approach } from "@/components/approach";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
+import { RouteProgress } from "@/components/motion/route-progress";
 import { Navigation } from "@/components/navigation";
 import { Profile } from "@/components/profile";
 import { ProjectList } from "@/components/project-list";
@@ -20,6 +21,7 @@ export function SiteShell({ content }: SiteShellProps) {
       <a className="skip-link" href="#main">
         {skipLabel}
       </a>
+      <RouteProgress />
       <Navigation content={content} />
       <main id="main" data-locale={content.locale}>
         <Hero content={content} />
