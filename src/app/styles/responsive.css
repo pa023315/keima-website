@@ -81,7 +81,7 @@
   .section-heading-block { grid-column: 2; }
 
   .positioning .section-heading-block { display: block; }
-  .positioning-display { font-size: clamp(3.6rem, 18vw, 6rem); line-height: 0.82; }
+  .positioning-display { font-size: clamp(3.25rem, 14vw, 3.5rem); line-height: 0.84; }
   .positioning-copy { grid-column: 2; margin-top: 3.5rem; }
   .positioning-copy p { font-size: 1.08rem; line-height: 1.8; }
 

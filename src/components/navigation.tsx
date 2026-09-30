@@ -64,6 +64,10 @@ export function Navigation({ content }: NavigationProps) {
           ))}
         </ul>
       </nav>
+
+      <div className="header-rail" aria-hidden="true">
+        <span>KEIMA / 2026</span>
+      </div>
     </header>
   );
 }

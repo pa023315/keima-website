@@ -96,6 +96,28 @@ test("desktop hero cut aligns with the hero top and bottom edges", async ({ page
   );
 });
 
+test("desktop hero creates a deliberate logo-to-cut composition", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const hero = page.locator("#home");
+  const logo = hero.locator(".hero-logo");
+  const cut = hero.locator(".hero-cut");
+  const [heroBox, logoBox, cutBox] = await Promise.all([
+    hero.boundingBox(),
+    logo.boundingBox(),
+    cut.boundingBox(),
+  ]);
+
+  expect(heroBox).not.toBeNull();
+  expect(logoBox).not.toBeNull();
+  expect(cutBox).not.toBeNull();
+  expect(logoBox!.width).toBeGreaterThan(heroBox!.width * 0.35);
+  expect(logoBox!.x + logoBox!.width).toBeLessThan(cutBox!.x + cutBox!.width * 0.6);
+  expect(Math.abs(cutBox!.y - heroBox!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(cutBox!.y + cutBox!.height - (heroBox!.y + heroBox!.height))).toBeLessThanOrEqual(1);
+});
+
 test("language switching persists the selected locale and current section", async ({ page }) => {
   await page.goto("/zh-TW/#home");
 

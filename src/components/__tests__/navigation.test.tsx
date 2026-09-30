@@ -93,6 +93,7 @@ describe("Navigation", () => {
         href,
       );
     }
+    expect(screen.getByText("KEIMA / 2026")).toBeInTheDocument();
   });
 
   it("updates the active section, locale hash, and disconnects its observer", () => {

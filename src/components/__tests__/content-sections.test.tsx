@@ -53,6 +53,8 @@ describe("Hero", () => {
       "hero-subtitle",
     );
     expect(within(hero).getByText("Beyond the expected path.")).toHaveClass("hero-supporting");
+    expect(hero.querySelector(".hero-path")).toHaveAttribute("aria-hidden", "true");
+    expect(within(hero).getByText("00 / KEIMA")).toBeInTheDocument();
     expect(within(hero).queryByText("STRATEGY / PROJECTS / CONNECTIONS / DIGITAL")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /向下探索/ })).not.toBeInTheDocument();
   });

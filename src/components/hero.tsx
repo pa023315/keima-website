@@ -21,6 +21,12 @@ export function Hero({ content }: HeroProps) {
       data-motion-intensity="enhanced"
     >
       <div className="hero-cut" aria-hidden="true" />
+      <div className="hero-path" aria-hidden="true">
+        <span className="hero-path-node" />
+      </div>
+      <p className="hero-section-label" aria-hidden="true">
+        00 / KEIMA
+      </p>
       <HeroMotion>
         <div className="hero-mark hero-reveal hero-reveal--logo">
           <Image
