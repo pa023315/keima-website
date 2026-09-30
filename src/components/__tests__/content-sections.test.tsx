@@ -143,7 +143,11 @@ describe("Profile", () => {
     render(<Profile content={zhContent} />);
 
     const section = screen.getByRole("region", { name: "Who is behind KEIMA" });
-    expect(within(section).getByRole("heading", { name: "IAN / 祤呈" })).toBeVisible();
+    expect(within(section).getByText("04")).toHaveClass("section-index-value");
+    expect(section.querySelector(".profile-portrait")).toHaveAttribute("aria-hidden", "true");
+    expect(within(section).getByRole("heading", { name: "IAN / 祤呈" })).toHaveClass(
+      "profile-name",
+    );
     expect(within(section).getByText("Consultant / Project Director")).toBeVisible();
     expect(within(section).getByText("Strategy")).toBeVisible();
     expect(within(section).getByText("Game & Digital Entertainment")).toBeVisible();
@@ -156,10 +160,14 @@ describe("Contact", () => {
   it("shows a pending business email as text rather than a mail link", () => {
     render(<Contact content={zhContent} />);
 
-    expect(screen.getByRole("region", { name: "WHAT'S YOUR NEXT MOVE?" })).toHaveAttribute(
+    const contactSection = screen.getByRole("region", { name: "WHAT'S YOUR NEXT MOVE?" });
+    expect(contactSection).toHaveAttribute(
       "data-motion-accent",
       "contact-finale",
     );
+    expect(within(contactSection).getByText("05")).toHaveClass("section-index-value");
+    expect(within(contactSection).queryByText("CREATOR ERP")).not.toBeInTheDocument();
+    expect(within(contactSection).queryByText("CONSULTING")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /service@pa023315.com/ })).toHaveAttribute(
       "href",
       "mailto:service@pa023315.com",

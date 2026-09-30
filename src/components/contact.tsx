@@ -18,7 +18,7 @@ export function Contact({ content }: ContactProps) {
         data-motion-accent="contact-finale"
       >
         <p className="section-index contact-index" aria-hidden="true">
-          <span>06</span>
+          <span className="section-index-value">05</span>
         </p>
         <p className="contact-label">{contact.label}</p>
         <h2 id="contact-title" className="contact-title">

@@ -33,6 +33,15 @@ test("business email is presented as a ready mail link", async ({ page }) => {
   expect(letterSpacing).toBeGreaterThan(-2);
 });
 
+test("section numbering remains continuous after the removed philosophy section", async ({ page }) => {
+  await page.goto("/zh-TW/");
+  await expect(page.locator("#profile .section-index-value")).toHaveText("04");
+  await expect(page.locator("#contact .section-index-value")).toHaveText("05");
+  await expect(page.getByText("CREATOR ERP", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("CONSULTING", { exact: true })).toHaveCount(0);
+  await expect(page.locator("#philosophy")).toHaveCount(0);
+});
+
 test("footer ends with the approved full-width copyright row", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");
