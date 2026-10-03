@@ -14,13 +14,12 @@ describe("siteContent", () => {
         "projects",
         "connections",
       ]);
-      expect(locale.inMotion.projects).toHaveLength(3);
+      expect(locale.inMotion.projects).toHaveLength(2);
       expect(locale.inMotion.projects.map((project) => project.id)).toEqual([
         "jobsgame",
-        "indie-guider",
-        "gamecf",
+        "virtual-vector",
       ]);
-      expect(locale.inMotion.projects.map((project) => project.index)).toEqual(["01", "02", "03"]);
+      expect(locale.inMotion.projects.map((project) => project.index)).toEqual(["01", "02"]);
     }
   });
 
@@ -46,20 +45,26 @@ describe("siteContent", () => {
     expect(zh.contact.email).toEqual({ status: "ready", value: "service@pa023315.com" });
     expect(zh.inMotion.projects.map((project) => project.url)).toEqual([
       { status: "ready", value: "https://jobsgame.tw/" },
-      { status: "ready", value: "https://indie-guider.games/" },
-      { status: "ready", value: "https://gamecf.tw/" },
+      { status: "ready", value: "https://virtual-vector.com/" },
     ]);
+    expect(zh.inMotion.projects[1]).toMatchObject({
+      title: "VIRTUAL VECTOR",
+      label: "虛擬向量計劃",
+      description: "跨越次元，與你相遇。",
+    });
   });
 
-  it("keeps the original project list without invented projects", () => {
+  it("keeps only the two approved active projects", () => {
     const zh = siteContent["zh-TW"];
 
-    expect(zh.inMotion.projects.find((project) => project.id === "gamecf")?.url).toEqual({
+    expect(zh.inMotion.projects.find((project) => project.id === "virtual-vector")?.url).toEqual({
       status: "ready",
-      value: "https://gamecf.tw/",
+      value: "https://virtual-vector.com/",
     });
     const projectIds: readonly string[] = zh.inMotion.projects.map((project) => project.id);
-    expect(projectIds).toEqual(["jobsgame", "indie-guider", "gamecf"]);
+    expect(projectIds).toEqual(["jobsgame", "virtual-vector"]);
+    expect(projectIds).not.toContain("indie-guider");
+    expect(projectIds).not.toContain("gamecf");
     expect(projectIds).not.toContain("creator-erp");
     expect(projectIds).not.toContain("consulting");
   });

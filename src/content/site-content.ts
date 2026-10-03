@@ -3,7 +3,7 @@ export type ContentState<T> =
   | { status: "pending"; label: string };
 
 export type ContentLocale = "zh-TW" | "en";
-export type ProjectId = "jobsgame" | "indie-guider" | "gamecf";
+export type ProjectId = "jobsgame" | "virtual-vector";
 
 export type NavSectionId = "home" | "about" | "approach" | "in-motion" | "profile" | "contact";
 
@@ -137,20 +137,12 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
           url: ready("https://jobsgame.tw/"),
         },
         {
-          id: "indie-guider",
+          id: "virtual-vector",
           index: "02",
-          title: "INDIE GUIDER",
-          label: "Independent Game Media",
-          description: "關注獨立遊戲、產業與開發者的媒體計畫。",
-          url: ready("https://indie-guider.games/"),
-        },
-        {
-          id: "gamecf",
-          index: "03",
-          title: "GAMECF",
-          label: "Digital Game Crowdfunding",
-          description: "數位遊戲群眾募資資訊站。",
-          url: ready("https://gamecf.tw/"),
+          title: "VIRTUAL VECTOR",
+          label: "虛擬向量計劃",
+          description: "跨越次元，與你相遇。",
+          url: ready("https://virtual-vector.com/"),
         },
       ],
     },
@@ -240,20 +232,12 @@ export const siteContent: { [L in ContentLocale]: LocaleContent<L> } = {
           url: ready("https://jobsgame.tw/"),
         },
         {
-          id: "indie-guider",
+          id: "virtual-vector",
           index: "02",
-          title: "INDIE GUIDER",
-          label: "Independent Game Media",
-          description: "A media project focused on indie games, industry, and developers.",
-          url: ready("https://indie-guider.games/"),
-        },
-        {
-          id: "gamecf",
-          index: "03",
-          title: "GAMECF",
-          label: "Digital Game Crowdfunding",
-          description: "A digital game crowdfunding information site.",
-          url: ready("https://gamecf.tw/"),
+          title: "VIRTUAL VECTOR",
+          label: "Virtual Vector Project",
+          description: "Across dimensions, we meet.",
+          url: ready("https://virtual-vector.com/"),
         },
       ],
     },
