@@ -109,6 +109,20 @@ test("mobile uses the standalone color symbol", async ({ page }) => {
   );
 });
 
+test("Virtual Vector uses a distinct branded placeholder", async ({ page }) => {
+  await page.goto("/zh-TW/");
+
+  const jobsgameBackground = await page.locator(".project-art--jobsgame").evaluate(
+    (node) => getComputedStyle(node).backgroundImage,
+  );
+  const virtualVectorBackground = await page.locator(".project-art--virtual-vector").evaluate(
+    (node) => getComputedStyle(node).backgroundImage,
+  );
+
+  expect(virtualVectorBackground).not.toBe("none");
+  expect(virtualVectorBackground).not.toBe(jobsgameBackground);
+});
+
 test("desktop hero cut aligns with the hero top and bottom edges", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");

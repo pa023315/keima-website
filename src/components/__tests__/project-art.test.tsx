@@ -5,7 +5,7 @@ import { ProjectArt } from "@/components/project-art";
 import type { ProjectId } from "@/content/site-content";
 
 describe("ProjectArt", () => {
-  it.each(["jobsgame", "indie-guider", "gamecf"] as const)(
+  it.each(["jobsgame", "virtual-vector"] as const)(
     "renders %s as decorative branded art",
     (project: ProjectId) => {
       const { container } = render(<ProjectArt project={project} />);
