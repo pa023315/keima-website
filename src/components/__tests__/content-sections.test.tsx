@@ -111,34 +111,27 @@ describe("Approach", () => {
 });
 
 describe("ProjectList", () => {
-  it("renders the three real projects as large linked cards", () => {
+  it("renders the two approved projects as compact linked rows", () => {
     render(<ProjectList content={zhContent} />);
 
     const section = screen.getByRole("region", { name: "CURRENTLY IN MOTION" });
-    const cards = section.querySelectorAll(".project-card");
-    const media = section.querySelectorAll(".project-media");
-
-    expect(cards).toHaveLength(3);
-    expect(media).toHaveLength(3);
-    expect(section.querySelectorAll(".project-art")).toHaveLength(3);
-    expect(section.querySelector(".project-row")).not.toBeInTheDocument();
+    expect(section.querySelectorAll(".project-card")).toHaveLength(2);
+    expect(section.querySelectorAll(".project-media-frame")).toHaveLength(2);
+    expect(section.querySelectorAll(".project-art")).toHaveLength(2);
     expect(within(section).getByRole("link", { name: /JOBSGAME/ })).toHaveAttribute(
       "href",
       "https://jobsgame.tw/",
     );
-    expect(within(section).getByRole("link", { name: /INDIE GUIDER/ })).toHaveAttribute(
+    expect(within(section).getByRole("link", { name: /VIRTUAL VECTOR/ })).toHaveAttribute(
       "href",
-      "https://indie-guider.games/",
-    );
-    expect(within(section).getByRole("link", { name: /GAMECF/ })).toHaveAttribute(
-      "href",
-      "https://gamecf.tw/",
+      "https://virtual-vector.com/",
     );
     expect(section.querySelector(".project-card--jobsgame .project-media")).toBeInTheDocument();
     expect(
-      section.querySelector(".project-card--indie-guider .project-media"),
+      section.querySelector(".project-card--virtual-vector .project-media"),
     ).toBeInTheDocument();
-    expect(section.querySelector(".project-card--gamecf .project-media")).toBeInTheDocument();
+    expect(within(section).queryByText("INDIE GUIDER")).not.toBeInTheDocument();
+    expect(within(section).queryByText("GAMECF")).not.toBeInTheDocument();
     expect(within(section).queryByText("CREATOR ERP")).not.toBeInTheDocument();
     expect(within(section).queryByText("CONSULTING")).not.toBeInTheDocument();
   });

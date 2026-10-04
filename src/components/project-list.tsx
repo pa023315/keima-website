@@ -22,20 +22,23 @@ function ProjectCard({ project, index }: { project: ProjectContent; index: numbe
   const cardContent = (
     <>
       <div className="project-media" aria-hidden="true">
-        <ProjectArt project={project.id} />
-        <span className="project-media-marker">
-          {project.index} / {project.title}
-        </span>
+        <div className="project-media-frame">
+          <ProjectArt project={project.id} />
+          <span className="project-media-marker">{project.index}</span>
+        </div>
       </div>
       <div className="project-card-copy">
+        <div className="project-card-meta">
+          <span className="project-card-index">{project.index}</span>
+          <span className="project-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </div>
         <div className="project-card-text">
           <h3 className="project-title">{project.title}</h3>
           <p className="project-label">{project.label}</p>
           <p className="project-description">{project.description}</p>
         </div>
-        <span className="project-arrow" aria-hidden="true">
-          ↗
-        </span>
       </div>
     </>
   );
@@ -44,7 +47,6 @@ function ProjectCard({ project, index }: { project: ProjectContent; index: numbe
     <li
       className={`project-card project-card--${project.id}`}
       data-link-state={href ? "ready" : "pending"}
-      data-project-position={index % 2 === 0 ? "leading" : "trailing"}
     >
       <Reveal delay={index * 0.08}>
         {href ? (
