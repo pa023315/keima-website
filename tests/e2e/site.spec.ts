@@ -123,6 +123,39 @@ test("Virtual Vector uses a distinct branded placeholder", async ({ page }) => {
   expect(virtualVectorBackground).not.toBe(jobsgameBackground);
 });
 
+test("in-motion fits two 16:9 project rows in one desktop viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/zh-TW/");
+
+  const section = page.locator("#in-motion");
+  await section.scrollIntoViewIfNeeded();
+  const sectionBox = await section.boundingBox();
+
+  expect(sectionBox).not.toBeNull();
+  expect(sectionBox!.height).toBeLessThanOrEqual(900);
+  await expect(section.locator(".project-card")).toHaveCount(2);
+
+  for (const frame of await section.locator(".project-media-frame").all()) {
+    const box = await frame.boundingBox();
+    expect(box).not.toBeNull();
+    expect(Math.abs(box!.width / box!.height - 16 / 9)).toBeLessThan(0.03);
+  }
+});
+
+test("in-motion stacks 16:9 project covers on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh-TW/");
+
+  const firstCard = page.locator("#in-motion .project-card").first();
+  const media = await firstCard.locator(".project-media-frame").boundingBox();
+  const copy = await firstCard.locator(".project-card-copy").boundingBox();
+
+  expect(media).not.toBeNull();
+  expect(copy).not.toBeNull();
+  expect(copy!.y).toBeGreaterThan(media!.y + media!.height - 1);
+  expect(Math.abs(media!.width / media!.height - 16 / 9)).toBeLessThan(0.03);
+});
+
 test("desktop hero cut aligns with the hero top and bottom edges", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");
@@ -211,14 +244,14 @@ test("mobile project cards use a compact single-column image layout", async ({ p
 
   const cards = page.locator(".project-card");
   const firstCard = cards.first();
-  const firstMedia = firstCard.locator(".project-media");
+  const firstMedia = firstCard.locator(".project-media-frame");
 
-  await expect(cards).toHaveCount(3);
+  await expect(cards).toHaveCount(2);
   await expect(firstMedia).toBeVisible();
 
   const layout = await page.evaluate(() => {
     const list = document.querySelector<HTMLElement>(".project-list")!;
-    const media = document.querySelector<HTMLElement>(".project-media")!;
+    const media = document.querySelector<HTMLElement>(".project-media-frame")!;
     const mediaBox = media.getBoundingClientRect();
     return {
       columns: getComputedStyle(list).gridTemplateColumns.split(" ").length,
@@ -228,7 +261,7 @@ test("mobile project cards use a compact single-column image layout", async ({ p
   });
 
   expect(layout.columns).toBe(1);
-  expect(layout.mediaRatio).toBeGreaterThan(1.5);
+  expect(Math.abs(layout.mediaRatio - 16 / 9)).toBeLessThan(0.03);
   expect(layout.overflow).toBeLessThanOrEqual(1);
 });
 
@@ -254,18 +287,21 @@ test("desktop uses the restrained consultancy type hierarchy", async ({ page }) 
   expect(sizes.body).toBeGreaterThanOrEqual(17);
 });
 
-test("desktop separates editorial project features from the approach row system", async ({ page }) => {
+test("desktop uses compact horizontal project rows distinct from the approach system", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/zh-TW/");
 
   const layout = await page.evaluate(() => {
     const projectList = document.querySelector<HTMLElement>(".project-list")!;
     const cards = [...document.querySelectorAll<HTMLElement>(".project-card")];
-    const media = document.querySelector<HTMLElement>(".project-media")!.getBoundingClientRect();
+    const media = document
+      .querySelector<HTMLElement>(".project-media-frame")!
+      .getBoundingClientRect();
+    const firstRow = document.querySelector<HTMLElement>(".project-card-link")!;
     return {
       columns: getComputedStyle(projectList).gridTemplateColumns.split(" ").length,
+      rowColumns: getComputedStyle(firstRow).gridTemplateColumns.split(" ").length,
       cardTopPositions: cards.map((card) => Math.round(card.getBoundingClientRect().top)),
-      positions: cards.map((card) => card.dataset.projectPosition),
       mediaRatio: media.width / media.height,
       approachIsRows: getComputedStyle(
         document.querySelector<HTMLElement>(".approach-row .reveal-content")!,
@@ -274,9 +310,9 @@ test("desktop separates editorial project features from the approach row system"
   });
 
   expect(layout.columns).toBe(1);
-  expect(new Set(layout.cardTopPositions).size).toBe(3);
-  expect(layout.positions).toEqual(["leading", "trailing", "leading"]);
-  expect(layout.mediaRatio).toBeGreaterThan(1.3);
+  expect(layout.rowColumns).toBe(2);
+  expect(new Set(layout.cardTopPositions).size).toBe(2);
+  expect(Math.abs(layout.mediaRatio - 16 / 9)).toBeLessThan(0.03);
   expect(layout.approachIsRows).toBe("grid");
 });
 
