@@ -9,12 +9,14 @@ type LocaleMetadata = {
 
 const metadataByLocale: Record<Locale, LocaleMetadata> = {
   "zh-TW": {
-    title: "KEIMA／桂馬數位｜跨越既有路徑，連結新的可能。",
-    description: "KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。",
+    title: "桂馬數位 KEIMA｜數位策略顧問與專案推進",
+    description:
+      "桂馬數位（KEIMA）提供數位策略顧問、專案企劃與推進，串連遊戲與數位娛樂、創作者經濟的內容、產業資源與合作夥伴，協助團隊把新想法落實為可執行的計畫。",
   },
   en: {
-    title: "KEIMA | Cross existing paths, connect new possibilities.",
-    description: "KEIMA is a digital consulting brand built around strategy, creativity, and connections.",
+    title: "KEIMA | Digital Strategy Consulting & Project Direction",
+    description:
+      "KEIMA provides digital strategy consulting and project direction for games, digital entertainment, and the creator economy, connecting people and resources to move new ideas into execution.",
   },
 };
 
@@ -30,6 +32,7 @@ export function createSiteMetadata(locale: Locale): Metadata {
       languages: {
         "zh-TW": "/zh-TW/",
         en: "/en/",
+        "x-default": "/zh-TW/",
       },
     },
     icons: { icon: "/favicon.svg" },
@@ -42,8 +45,13 @@ export function createSiteMetadata(locale: Locale): Metadata {
       siteName: "KEIMA",
     },
     robots: {
-      index: false,
-      follow: false,
+      index: true,
+      follow: true,
+    },
+    twitter: {
+      card: "summary",
+      title: metadata.title,
+      description: metadata.description,
     },
   };
 }

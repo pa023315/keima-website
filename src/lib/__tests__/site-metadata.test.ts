@@ -13,6 +13,7 @@ describe("createSiteMetadata", () => {
       languages: {
         "zh-TW": "/zh-TW/",
         en: "/en/",
+        "x-default": "/zh-TW/",
       },
     });
     expect(metadata.icons).toEqual({ icon: "/favicon.svg" });
@@ -24,13 +25,18 @@ describe("createSiteMetadata", () => {
     });
   });
 
-  it("keeps unfinished local metadata out of the search index", () => {
+  it("makes the finished localized pages eligible for indexing", () => {
     const metadata = createSiteMetadata("zh-TW");
 
     expect(metadata.metadataBase).toEqual(new URL("https://keima.tw"));
-    expect(metadata.title).toBe("KEIMA／桂馬數位｜跨越既有路徑，連結新的可能。");
-    expect(metadata.description).toBe("KEIMA 桂馬數位，是一個以策略、創意與連結為核心的數位顧問品牌。");
-    expect(metadata.robots).toEqual({ index: false, follow: false });
+    expect(metadata.title).toBe("桂馬數位 KEIMA｜數位策略顧問與專案推進");
+    expect(metadata.description).toContain("遊戲與數位娛樂、創作者經濟");
+    expect(metadata.robots).toEqual({ index: true, follow: true });
+    expect(metadata.twitter).toMatchObject({
+      card: "summary",
+      title: metadata.title,
+      description: metadata.description,
+    });
     expect(metadata.openGraph).toMatchObject({
       locale: "zh_TW",
       url: "/zh-TW/",

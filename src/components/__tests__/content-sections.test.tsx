@@ -72,7 +72,7 @@ describe("About", () => {
     ).not.toBeInTheDocument();
 
     const about = screen.getByRole("region", {
-      name: "Positioning",
+      name: "桂馬數位服務定位",
     });
     expect(within(about).getByRole("heading", { name: /WE CONNECT/ })).toHaveClass(
       "positioning-display",
@@ -80,7 +80,7 @@ describe("About", () => {
     expect(about.querySelector(".positioning-statement")).toBeInTheDocument();
     expect(
       within(about).getByText(
-        "桂馬數位以策略與專案為核心，串連創作者、內容、產業與數位工具，將分散的想法整理成可以真正執行的方向。",
+        "桂馬數位以數位策略顧問與專案推進為核心，協助遊戲、數位娛樂與創作者經濟團隊規劃服務方向、整合內容與產業資源，並透過商務合作將新計畫落地。",
       ),
     ).toBeVisible();
     expect(within(about).getByText("好的解決方案，不一定沿著既有路徑前進。")).toHaveClass(
